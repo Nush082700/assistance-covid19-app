@@ -1,0 +1,32 @@
+{% extends 'base.html' %} {% block head %}
+<title>Task Master</title>
+{% endblock %} {% block body %}
+
+<p>Add Helper</p>
+<div class="content">
+  <div class="form">
+    <form action="/helper/{{task.id}}" method="POST">
+      Name of Assitance Provider:<input
+        type="text"
+        name="name_helper"
+        id="name_helper"
+      />
+      <br />
+      Address of Assitance Provider:<input
+        type="text"
+        name="address_helper"
+        id="address_helper"
+      />
+      <br />
+      Phone Number of Assitance Provider:<input
+        type="text"
+        name="phone_helper"
+        id="phone_helper"
+      />
+      <br />
+      <input type="submit" value="Accept the Request" />
+    </form>
+  </div>
+</div>
+
+{% endblock %}
