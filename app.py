@@ -1,8 +1,21 @@
-from flask import Flask, render_template, url_for, request, redirect
+from sqlalchemy.inspection import inspect
+from flask import Flask, render_template, url_for, request, redirect, jsonify, Response, json
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+from flask_cors import CORS
+from collections import OrderedDict
+
+
+class DictSerializable(object):
+    def _asdict(self):
+        result = OrderedDict()
+        for key in self.__mapper__.c.keys():
+            result[key] = getattr(self, key)
+        return result
+
 
 app = Flask(__name__)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
@@ -18,6 +31,12 @@ class Todo(db.Model):
     address_helper = db.Column(db.String(1000), nullable=False)
     phone_helper = db.Column(db.Integer)
 
+    def _asdict(self):
+        result = OrderedDict()
+        for key in self.__mapper__.c.keys():
+            result[key] = getattr(self, key)
+        return result
+
     def __repr__(self):
         return '<Task %r>' % self.id
 
@@ -25,6 +44,7 @@ class Todo(db.Model):
 @app.route('/', methods=['POST', 'GET'])
 def help():
     if request.method == 'POST':
+        print(request.form['name_helpee'])
         name_helpee = request.form['name_helpee']
         address_helpee = request.form['address_helpee']
         phone_helpee = request.form['phone_helpee']
@@ -92,5 +112,10 @@ def helper(id):
         return render_template('helper.html', task=task)
 
 
+@app.route('/requests/all', methods=['GET'])
+def getAllRequests():
+    return jsonify(requests=list(Todo.query.order_by(Todo.date_created).all()))
+
+
 if __name__ == "__main__":
-    app.run(debug = True)
+    app.run(debug=True)
