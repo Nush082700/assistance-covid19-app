@@ -1,0 +1,130 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,300");
+@media screen and (min-width: 639px) {
+  body {
+    background: whitesmoke; /* fallback for old browsers */
+    font-family: "Roboto", sans-serif;
+  }
+  p {
+    font-size: 40px;
+    line-height: 1.6;
+    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+    color: teal;
+    font-weight: bold;
+    text-decoration: underline overline;
+    align-self: left;
+    padding-left: 30%;
+  }
+
+  h4 {
+    line-height: 1.6;
+    font-family: "Open Sans", Helvetica, Arial, sans-serif;
+    color: #d4af37;
+    font-weight: bold;
+    align-self: left;
+    padding-left: 10%;
+  }
+
+  #form {
+    margin-top: 10px;
+    font-size: bold;
+    width: 40%;
+    display: relative;
+    float: center;
+    background-color: white;
+    color: teal;
+    border: 1px solid #ddd;
+    max-width: 360px;
+    margin: 0 auto 100px;
+    padding: 20px;
+    text-align: center;
+    z-index: 1;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+    font-weight: bold;
+  }
+
+  #form input[type="text"] {
+    font-family: "Roboto", sans-serif;
+    outline: 0;
+    background: #f2f2f2;
+    width: 100%;
+    border: 1px solid teal;
+    margin: 0 0 15px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 14px;
+    margin: 10px;
+    width: 350px;
+    height: 30px;
+  }
+
+  #form input[type="submit"] {
+    background-color: teal;
+    border: none;
+    color: white;
+    font-size: 12px;
+    padding: 16px 32px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+
+  #content {
+    margin: 0 auto;
+    width: 50%;
+  }
+
+  table {
+    display: relative;
+    float: right;
+    font-family: "Roboto", sans-serif;
+    border-collapse: collapse;
+    width: 50%;
+    text-align: left;
+  }
+
+  td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    font-family: "Roboto", sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+  }
+
+  #second {
+    border: 1px solid #ddd;
+    padding: 8px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    color: white;
+    background-color: #6ec6ba;
+    font-family: "Roboto", sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+  }
+
+  th {
+    border: 1px solid #ddd;
+    padding: 8px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    color: white;
+    background-color: teal;
+    font-family: "Roboto", sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    text-align: left;
+  }
+
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+
+  tr:hover {
+    background-color: #ddd;
+  }
+}
