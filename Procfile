@@ -1,2 +1,3 @@
-start: node frontend/server.js
-app:app.py
+web: node frontend/server.js 
+app:app
+
