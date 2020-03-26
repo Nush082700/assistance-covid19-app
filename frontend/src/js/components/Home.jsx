@@ -38,11 +38,13 @@ export default class Home extends Component {
 			<div class='home-page'>
 				<h1 class='header' type='h1'>
 					{' '}
-					Asistance Log
+					Assistance Log
 				</h1>
-				<div class='card-container'>
+				<div class='card-container' style={{ flexGrow: 1 }}>
 					<Link to='/helpeeForm' style={{ textDecoration: 'none' }}>
-						<button class='red'> Sign Up for Assistance</button>
+						<button class='red'>
+							<h2>Sign Up for Assistance</h2>{' '}
+						</button>
 					</Link>
 				</div>
 				<h2 class='need' type='h2'>
