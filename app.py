@@ -14,7 +14,7 @@ class DictSerializable(object):
         return result
 
 
-app = Flask(_name_,
+app = Flask(__name__,
             static_url_path='',
             static_folder='frontend/build')
 CORS(app)
