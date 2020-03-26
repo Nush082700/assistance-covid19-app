@@ -134,3 +134,16 @@ tr:hover {
   margin: 4px 2px;
   cursor: pointer;
 }
+
+@media screen and (min-width: 750px) {
+  .form {
+    float: left;
+    width: 35%;
+  }
+}
+
+@media screen and (min-width: 481px) and (max-width: 749px) {
+  .form {
+    width: 95%;
+  }
+}
