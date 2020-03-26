@@ -1,2 +1,2 @@
-web: node frontend/server.js 
+web: gunicorn app:app
 

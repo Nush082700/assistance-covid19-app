@@ -14,7 +14,9 @@ class DictSerializable(object):
         return result
 
 
-app = Flask(__name__)
+app = Flask(_name_,
+            static_url_path='',
+            static_folder='frontend/build')
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
@@ -56,13 +58,13 @@ def help():
         try:
             db.session.add(new_task)
             db.session.commit()
-            return redirect('/localhost:3000')
+            return redirect('/')
         except:
             return 'There was an issue adding your task'
 
     else:
         tasks = Todo.query.order_by(Todo.date_created).all()
-        return render_template('index.html', tasks=tasks)
+        return app.send_static_file('index.html')
 
 
 @app.route('/delete/<int:id>')
@@ -72,7 +74,7 @@ def delete(id):
     try:
         db.session.delete(task_to_delete)
         db.session.commit()
-        return redirect('/localhost:3000')
+        return redirect('/')
     except:
         return 'There was a problem deleting that task'
 
@@ -86,7 +88,7 @@ def update(id):
 
         try:
             db.session.commit()
-            return redirect('/localhost:3000')
+            return redirect('/')
         except:
             return 'There was an issue updating your task'
 
@@ -105,7 +107,7 @@ def helper(id):
 
         try:
             db.session.commit()
-            return redirect('/localhost:3000')
+            return redirect('/')
         except:
             return "there was an issue in accepting"
     else:
