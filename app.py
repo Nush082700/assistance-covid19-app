@@ -63,16 +63,8 @@ def help():
             return 'There was an issue adding your task'
 
     else:
-
-
-<< << << < HEAD
-tasks = Todo.query.order_by(Todo.date_created).all()
-print("we have tasks")
-== == == =
-# tasks = Todo.query.order_by(Todo.date_created).all()
-# return render_template('index.html', tasks=tasks)
->>>>>> > e151fa86613341e30d849d20e868f3aa1c459df9
-return app.send_static_file('index.html')
+        # tasks = Todo.query.order_by(Todo.date_created).all()
+        return app .send_static_file('index.html')
 
 
 @app.route('/delete/<int:id>')
