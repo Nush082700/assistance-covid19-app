@@ -15,7 +15,7 @@ class DictSerializable(object):
 
 
 app = Flask(__name__,
-            static_url_path='/frontend/build/static',
+            static_url_path='/static',
             static_folder='/frontend/build')
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
