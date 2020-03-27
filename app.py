@@ -65,7 +65,7 @@ def help():
     else:
         tasks = Todo.query.order_by(Todo.date_created).all()
         print("we have tasks")
-        return app.send_static_file('./frontend/build/static/index.html')
+        return app.send_file('./frontend/build/static/index.html')
 
 
 @app.route('/delete/<int:id>')
