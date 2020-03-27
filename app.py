@@ -1,5 +1,6 @@
 from sqlalchemy.inspection import inspect
-from flask import Flask, render_template, url_for, request, redirect, jsonify, Response, json, send_file
+from flask import Flask, render_template, url_for, request, redirect, jsonify, Response, json
+from flask import send_static_file
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_cors import CORS
@@ -15,7 +16,7 @@ class DictSerializable(object):
 
 
 app = Flask(__name__,
-            static_url_path='',
+            static_url_path='/',
             static_folder='frontend/build')
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -65,7 +66,7 @@ def help():
     else:
         tasks = Todo.query.order_by(Todo.date_created).all()
         print("we have tasks")
-        return app.send_file('./frontend/build/static/index.html')
+        return app.send_static_file('index.html')
 
 
 @app.route('/delete/<int:id>')
