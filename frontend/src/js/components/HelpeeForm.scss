@@ -6,9 +6,9 @@ $color-white: #fff;
 $color-bg-need: #8294c9;
 $color-shadow-need: #697ebf;
 $color-white-need: #9ba8d4;
-@import url('https://fonts.googleapis.com/css?family=Shadows+Into+Light&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Orbitron&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah&display=swap');
+// @import url('https://fonts.googleapis.com/css?family=Shadows+Into+Light&display=swap');
+// @import url('https://fonts.googleapis.com/css?family=Orbitron&display=swap');
+// @import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah&display=swap');
 body,
 html,
 .form-page {
@@ -33,7 +33,7 @@ input,
 select,
 textarea,
 button {
-	font-family: 'Montserrat', sans-serif;
+	//font-family: 'Montserrat', sans-serif;
 	letter-spacing: -0.2px;
 	font-size: $ruler;
 }
@@ -42,25 +42,25 @@ h3,
 h2 {
 	margin: 0;
 	&.header {
-		flex-grow: 1;
+		// flex-grow: 1;
 		color: $color-red;
-		font-family: 'Orbitron', sans-serif;
+		////font-family: 'Orbitron', sans-serif;
 		font-weight: 7000;
 		font-size: 3 * $ruler;
 	}
 	&.need {
 		color: $color-red;
-		font-family: 'Orbitron', sans-serif;
+		//font-family: 'Orbitron', sans-serif;
 		color: #697ebf;
 		// font-weight: 7000;
-		// font-size: 3 * $ruler;
+		font-size: 2 * $ruler;
 	}
 	&.got {
 		color: $color-red;
-		font-family: 'Orbitron', sans-serif;
+		//font-family: 'Orbitron', sans-serif;
 		color: #486a47;
 		// font-weight: 7000;
-		// font-size: 3 * $ruler;
+		font-size: 2 * $ruler;
 	}
 	&.error {
 		margin: 10px;
@@ -147,8 +147,8 @@ button {
 		// max-width: 100;
 		color: #697ebf; //$color-shadow;
 		// background-color: $color-bg-need;
-		// font-family: 'Shadows Into Light', cursive;
-		font-family: 'Gloria Hallelujah', cursive;
+		// //font-family: 'Shadows Into Light', cursive;
+		//font-family: 'Gloria Hallelujah', cursive;
 		// box-shadow: -5px -5px 20px $color-white-need,
 		// 5px 5px 20px $color-shadow-need;
 		align-items: center;
@@ -165,7 +165,7 @@ button {
 		// max-width: 100;
 		color: #486a47; //$color-shadow;
 		// background-color: $color-bg-need;
-		font-family: 'Gloria Hallelujah', cursive;
+		//font-family: 'Gloria Hallelujah', cursive;
 
 		// box-shadow: -5px -5px 20px $color-white-need,
 		// 5px 5px 20px $color-shadow-need;

@@ -114,7 +114,11 @@ def helper(id):
 
 @app.route('/requests/all', methods=['GET'])
 def getAllRequests():
-    return jsonify(requests=list(Todo.query.order_by(Todo.date_created).all()))
+    # return jsonify(requests=list(Todo.query.order_by(Todo.date_created).all()))
+    temp = list(Todo.query.order_by(Todo.date_created).all())
+    reqs = list(map(lambda x: x._asdict(), temp))
+    # print(type(reqs))
+    return jsonify(requests=reqs)
 
 
 if __name__ == "__main__":

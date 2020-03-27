@@ -5,7 +5,7 @@ fi
 if [ $1 == "run" ]
 then
 python3 app.py &
-cd frontend && npm run start &
+cd frontend && npm run start 
 fi
 # strval1="Ubuntu"
 # strval2="Windows"
