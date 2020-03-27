@@ -1,6 +1,5 @@
 from sqlalchemy.inspection import inspect
 from flask import Flask, render_template, url_for, request, redirect, jsonify, Response, json
-from flask import send_static_file
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from flask_cors import CORS
