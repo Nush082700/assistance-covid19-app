@@ -14,9 +14,7 @@ class DictSerializable(object):
         return result
 
 
-app = Flask(__name__,
-            static_url_path='/',
-            static_folder='/frontend/build')
+app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
@@ -65,7 +63,7 @@ def help():
     else:
         tasks = Todo.query.order_by(Todo.date_created).all()
         print("we have tasks")
-        return app.send_static_file('index.html')
+        return render_template('index.html')
 
 
 @app.route('/delete/<int:id>')
