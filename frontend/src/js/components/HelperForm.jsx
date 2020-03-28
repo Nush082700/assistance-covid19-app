@@ -49,7 +49,7 @@ export default class HelperForm extends Component {
     // bodyFormData.set('content', this.state.helpeeRequest);
     axios({
       method: "post",
-      url: `http://localhost:5000/helper/${this.state.req.id}`,
+      url: `/helper/${this.state.req.id}`,
       data: bodyFormData,
       headers: { "Content-Type": "multipart/form-data" }
     })

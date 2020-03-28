@@ -16,7 +16,7 @@ export default class Home extends Component {
   componentDidMount() {
     axios({
       method: "get",
-      url: "http://localhost:5000/requests/all"
+      url: "/requests/all"
     }).then(res => {
       // this.setState()
       let gotResponse = [];
