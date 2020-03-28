@@ -10,214 +10,216 @@ $color-white-need: #9ba8d4;
 // @import url('https://fonts.googleapis.com/css?family=Orbitron&display=swap');
 // @import url('https://fonts.googleapis.com/css?family=Gloria+Hallelujah&display=swap');
 body,
-html,
+html {
+  background-color: $color-bg;
+  height: 100vh;
+  width: 100vw;
+}
+
 .form-page {
-	background-color: $color-bg;
-	height: 100vh;
-	width: 100vw;
+  background-color: $color-bg;
+  min-height: 100vh;
+  min-width: 100vw;
 }
-
 .home-page {
-	background-color: $color-bg;
-	height: 100vh;
-	width: 100vw;
-	align-items: center;
-	justify-content: center;
-	display: flex;
-	flex-direction: column;
+  background-color: $color-bg;
+  min-height: 100vh;
+  min-width: 100vw;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
 }
-
 body,
 p,
 input,
 select,
 textarea,
 button {
-	//font-family: 'Montserrat', sans-serif;
-	letter-spacing: -0.2px;
-	font-size: $ruler;
+  //font-family: 'Montserrat', sans-serif;
+  letter-spacing: -0.2px;
+  font-size: $ruler;
 }
 h1,
 h3,
 h2 {
-	margin: 0;
-	&.header {
-		// flex-grow: 1;
-		color: $color-red;
-		////font-family: 'Orbitron', sans-serif;
-		font-weight: 7000;
-		font-size: 3 * $ruler;
-	}
-	&.need {
-		color: $color-red;
-		//font-family: 'Orbitron', sans-serif;
-		color: #697ebf;
-		// font-weight: 7000;
-		font-size: 2 * $ruler;
-	}
-	&.got {
-		color: $color-red;
-		//font-family: 'Orbitron', sans-serif;
-		color: #486a47;
-		// font-weight: 7000;
-		font-size: 2 * $ruler;
-	}
-	&.error {
-		margin: 10px;
-		color: $color-red;
-	}
+  margin: 0;
+  &.header {
+    // flex-grow: 1;
+    color: $color-red;
+    ////font-family: 'Orbitron', sans-serif;
+    font-weight: 7000;
+    font-size: 3 * $ruler;
+  }
+  &.need {
+    color: $color-red;
+    //font-family: 'Orbitron', sans-serif;
+    color: #697ebf;
+    // font-weight: 7000;
+    font-size: 2 * $ruler;
+  }
+  &.got {
+    color: $color-red;
+    //font-family: 'Orbitron', sans-serif;
+    color: #486a47;
+    // font-weight: 7000;
+    font-size: 2 * $ruler;
+  }
+  &.error {
+    margin: 10px;
+    color: $color-red;
+  }
 }
 div,
 p {
-	color: $color-shadow;
-	text-shadow: 1px 1px 1px $color-white;
+  color: $color-shadow;
+  text-shadow: 1px 1px 1px $color-white;
 }
 
 form {
-	padding: $ruler;
-	width: $ruler * 20;
-	margin: 0 auto;
+  padding: $ruler;
+  width: $ruler * 20;
+  margin: 0 auto;
 }
 
 .card-container {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	width: 100%;
-	// background-color: $color-shadow-need;
-	// text-shadow: 1px 1px 1px $color-white-need;
-	flex-grow: 1;
-	align-items: center;
-	justify-content: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  // background-color: $color-shadow-need;
+  // text-shadow: 1px 1px 1px $color-white-need;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
 }
 
 .segment {
-	padding: $ruler * 2 0;
-	text-align: center;
+  padding: $ruler * 2 0;
+  text-align: center;
 }
 
 button,
 input,
 textarea {
-	border: 0;
-	outline: 0;
-	font-size: $ruler;
-	border-radius: $ruler * 20;
-	padding: $ruler;
-	background-color: $color-bg;
-	text-shadow: 1px 1px 0 $color-white;
+  border: 0;
+  outline: 0;
+  font-size: $ruler;
+  border-radius: $ruler * 20;
+  padding: $ruler;
+  background-color: $color-bg;
+  text-shadow: 1px 1px 0 $color-white;
 }
 
 label {
-	display: block;
-	margin-bottom: $ruler * 1.5;
-	width: 100%;
+  display: block;
+  margin-bottom: $ruler * 1.5;
+  width: 100%;
 }
 
 input,
 textarea {
-	margin-right: $ruler/2;
-	box-shadow: inset 2px 2px 5px $color-shadow,
-		inset -5px -5px 10px $color-white;
-	width: 100%;
-	box-sizing: border-box;
-	transition: all 0.2s ease-in-out;
-	appearance: none;
-	-webkit-appearance: none;
+  margin-right: $ruler/2;
+  box-shadow: inset 2px 2px 5px $color-shadow, inset -5px -5px 10px $color-white;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s ease-in-out;
+  appearance: none;
+  -webkit-appearance: none;
 
-	&:focus {
-		box-shadow: inset 1px 1px 2px $color-shadow,
-			inset -1px -1px 2px $color-white;
-	}
+  &:focus {
+    box-shadow: inset 1px 1px 2px $color-shadow,
+      inset -1px -1px 2px $color-white;
+  }
 }
 
 button {
-	color: #61677c;
-	font-weight: bold;
-	box-shadow: -5px -5px 20px $color-white, 5px 5px 20px $color-shadow;
-	transition: all 0.2s ease-in-out;
-	cursor: pointer;
-	font-weight: 600;
+  color: #61677c;
+  font-weight: bold;
+  box-shadow: -5px -5px 20px $color-white, 5px 5px 20px $color-shadow;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  font-weight: 600;
 
-	&.card-need {
-		display: block;
-		width: 300px;
-		height: 200px;
-		padding: 3px;
-		// max-width: 100;
-		color: #697ebf; //$color-shadow;
-		// background-color: $color-bg-need;
-		// //font-family: 'Shadows Into Light', cursive;
-		//font-family: 'Gloria Hallelujah', cursive;
-		// box-shadow: -5px -5px 20px $color-white-need,
-		// 5px 5px 20px $color-shadow-need;
-		align-items: center;
-		justify-content: center;
-		border-radius: 10px;
-		margin: 10px;
-		text-decoration: none;
-	}
+  &.card-need {
+    display: block;
+    width: 300px;
+    height: 200px;
+    padding: 3px;
+    // max-width: 100;
+    color: #697ebf; //$color-shadow;
+    // background-color: $color-bg-need;
+    // //font-family: 'Shadows Into Light', cursive;
+    //font-family: 'Gloria Hallelujah', cursive;
+    // box-shadow: -5px -5px 20px $color-white-need,
+    // 5px 5px 20px $color-shadow-need;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin: 10px;
+    text-decoration: none;
+  }
 
-	&.card-got {
-		display: block;
-		width: 300px;
-		height: 200px;
-		// max-width: 100;
-		color: #486a47; //$color-shadow;
-		// background-color: $color-bg-need;
-		//font-family: 'Gloria Hallelujah', cursive;
+  &.card-got {
+    display: block;
+    width: 300px;
+    height: 200px;
+    // max-width: 100;
+    color: #486a47; //$color-shadow;
+    // background-color: $color-bg-need;
+    //font-family: 'Gloria Hallelujah', cursive;
 
-		// box-shadow: -5px -5px 20px $color-white-need,
-		// 5px 5px 20px $color-shadow-need;
-		align-items: center;
-		justify-content: center;
-		border-radius: 10px;
-		margin: 10px;
-	}
+    // box-shadow: -5px -5px 20px $color-white-need,
+    // 5px 5px 20px $color-shadow-need;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    margin: 10px;
+  }
 
-	&:hover {
-		box-shadow: -2px -2px 5px $color-white, 2px 2px 5px $color-shadow;
-	}
+  &:hover {
+    box-shadow: -2px -2px 5px $color-white, 2px 2px 5px $color-shadow;
+  }
 
-	&:active {
-		box-shadow: inset 1px 1px 2px $color-shadow,
-			inset -1px -1px 2px $color-white;
-	}
+  &:active {
+    box-shadow: inset 1px 1px 2px $color-shadow,
+      inset -1px -1px 2px $color-white;
+  }
 
-	.icon {
-		margin-right: $ruler/2;
-	}
+  .icon {
+    margin-right: $ruler/2;
+  }
 
-	&.unit {
-		border-radius: $ruler/2;
-		line-height: 0;
-		width: $ruler * 3;
-		height: $ruler * 3;
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-		margin: 0 $ruler/2;
-		font-size: $ruler * 1.2;
+  &.unit {
+    border-radius: $ruler/2;
+    line-height: 0;
+    width: $ruler * 3;
+    height: $ruler * 3;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 $ruler/2;
+    font-size: $ruler * 1.2;
 
-		.icon {
-			margin-right: 0;
-		}
-	}
+    .icon {
+      margin-right: 0;
+    }
+  }
 
-	&.red {
-		display: block;
-		width: 100%;
-		color: $color-red;
-	}
+  &.red {
+    display: block;
+    width: 100%;
+    color: $color-red;
+  }
 }
 
 .input-group {
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 
-	label {
-		margin: 0;
-		flex: 1;
-	}
+  label {
+    margin: 0;
+    flex: 1;
+  }
 }
