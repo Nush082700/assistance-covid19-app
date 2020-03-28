@@ -15,10 +15,10 @@ class DictSerializable(object):
 
 
 app = Flask(__name__, static_url_path='',
-            static_folder='client/build')
+            static_folder='frontend/build')
 # static_url_path='/static',
 # static_folder='/frontend/build')
-# CORS(app)
+CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 db = SQLAlchemy(app)
 
@@ -69,7 +69,7 @@ def help():
         return app.send_static_file('index.html')
 
 
-@app.route('/delete/<int:id>')
+@app.route('/delete/<int:id>',  methods=['POST', 'GET'])
 def delete(id):
     task_to_delete = Todo.query.get_or_404(id)
 
@@ -116,7 +116,7 @@ def helper(id):
         return render_template('helper.html', task=task)
 
 
-@app.route('/requests/all', methods=['GET'])
+@app.route('/requests/all', methods=['GET','POST'])
 def getAllRequests():
     # return jsonify(requests=list(Todo.query.order_by(Todo.date_created).all()))
     temp = list(Todo.query.order_by(Todo.date_created).all())
