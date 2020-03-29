@@ -51,15 +51,15 @@ class Todo(db.Model):
     __tablename__ = 'assistance'
 
     id = db.Column(db.Integer, primary_key=True)
-    name_help = db.Column(db.String())
-    address_help = db.Column(db.String())
-    phone_help = db.Column(db.BigInteger)
-    content = db.Column(db.String())
-    date_created = db.Column(db.Integer)
-    name_helper = db.Column(db.String())
-    address_helper = db.Column(db.String())
-    phone_helper = db.Column(db.BigInteger)
-    pincode = db.Column(db.Integer)
+    name_help = db.Column(db.String(), default = "t")
+    address_help = db.Column(db.String(), default = "t")
+    phone_help = db.Column(db.BigInteger, default = 0)
+    content = db.Column(db.String(), default = "t")
+    date_created = db.Column(db.Integer, default = 0)
+    name_helper = db.Column(db.String(), default = "t")
+    address_helper = db.Column(db.String(), default = "t")
+    phone_helper = db.Column(db.BigInteger, default = 0)
+    pincode = db.Column(db.Integer, default = 0)
 
     def __init__(self, name_help, address_help, phone_help, content, date_created, name_helper, address_helper, phone_helper, pincode):
         self.name_help = name_help
@@ -109,7 +109,8 @@ def help():
         task_content = request.form['content']
         # pincode_helpee = request.form['pincode']
         new_task = Todo(name_help=name_helpee, content=task_content,
-                        address_help=address_helpee, phone_help=phone_helpee)
+                        address_help=address_helpee, phone_help=phone_helpee,
+                        name_helper=NULL, address_helper=NULL, phone_helper="",pincode = "", date_created = "")
 
         try:
             print("Adding to the database")
