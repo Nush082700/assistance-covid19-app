@@ -5,7 +5,6 @@ from datetime import datetime
 from flask_cors import CORS
 from collections import OrderedDict
 import os
-
 # def get_env_variable(name):
 #     try:
 #         return os.environ[name]
@@ -44,14 +43,15 @@ db = SQLAlchemy(app)
 
 
 class Todo(db.Model):
+    __tablename__ = 'todo'
     id = db.Column(db.Integer, primary_key=True)
-    name_help = db.Column(db.String(200), nullable=False)
-    address_help = db.Column(db.String(1000), nullable=False)
+    name_help = db.Column(db.String(), nullable=False)
+    address_help = db.Column(db.String(), nullable=False)
     phone_help = db.Column(db.Integer)
-    content = db.Column(db.String(1000), nullable=False)
+    content = db.Column(db.String(), nullable=False)
     date_created = db.Column(db.DateTime, default=datetime.utcnow)
-    name_helper = db.Column(db.String(200), nullable=False)
-    address_helper = db.Column(db.String(1000), nullable=False)
+    name_helper = db.Column(db.String(), nullable=False)
+    address_helper = db.Column(db.String(), nullable=False)
     phone_helper = db.Column(db.Integer)
     pincode = db.Column(db.Integer)
 
@@ -73,9 +73,10 @@ def help():
         address_helpee = request.form['address_helpee']
         phone_helpee = request.form['phone_helpee']
         task_content = request.form['content']
+        pincode_helpee = request.form['pincode']
         new_task = Todo(name_help=name_helpee, content=task_content,
                         address_help=address_helpee, phone_help=phone_helpee,
-                        name_helper="", address_helper="", phone_helper="")
+                        name_helper="", address_helper="", phone_helper="",pincode = "")
 
         try:
             db.session.add(new_task)
