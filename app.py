@@ -18,7 +18,8 @@ import os
 # POSTGRES_PW = get_env_variable("POSTGRES_PW")
 # POSTGRES_DB = get_env_variable("POSTGRES_DB")
 
-
+app.logger.addHandler(logging.StreamHandler(sys.stdout))
+app.logger.setLevel(logging.ERROR)
 class DictSerializable(object):
     def _asdict(self):
         result = OrderedDict()
