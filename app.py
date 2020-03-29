@@ -6,7 +6,7 @@ from flask_cors import CORS
 from collections import OrderedDict
 import os
 from flask_migrate import Migrate
-from sqlalchemy.dialetcs.mysql import BIGINT
+# from sqlalchemy.dialetcs.mysql import BIGINT
 # def get_env_variable(name):
 #     try:
 #         return os.environ[name]
