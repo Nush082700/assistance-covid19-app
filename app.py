@@ -1,7 +1,7 @@
 from sqlalchemy.inspection import inspect
 from flask import Flask, render_template, url_for, request, redirect, jsonify, Response, json
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+# from datetime import datetime
 from flask_cors import CORS
 from collections import OrderedDict
 import os
@@ -214,7 +214,8 @@ def getAllRequests():
     # except Exception as e:
 	#     return(str(e))
     # return jsonify(requests=list(Todo.query.order_by(Todo.date_created).all()))
-    temp = list(Todo.query.order_by(Todo.date_created).all())
+    # temp = list(Todo.query.order_by(Todo.date_created).all())
+    temp = list(Todo.query.all())
     reqs = list(map(lambda x: x._asdict(), temp))
     # print(type(reqs))
     return jsonify(requests=reqs)
