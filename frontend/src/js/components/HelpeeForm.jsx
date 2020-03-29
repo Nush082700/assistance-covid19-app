@@ -15,18 +15,20 @@ class RequireAssistanceForm extends Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    // console.log(this.context);
+    console.log("the error is here1");
   }
 
   handleChange = event => {
     const name = event.target.name;
     const value = event.target.value;
     this.setState({ ...this.state, [name]: value });
+    console.log("the error is here2");
   };
 
   handleSubmit = event => {
     var hist = this.props.history;
     this.setState({ error: "" });
+    console.log("the error is here3");
 
     if (
       !this.state.helpeeAddr ||
@@ -62,15 +64,16 @@ class RequireAssistanceForm extends Component {
     // 	return;
     // }
     this.setState({ error: "" });
-    console.log("here");
+    console.log("here4");
     var bodyFormData = new FormData();
+    console.log("the error is here bodyFormData");
     bodyFormData.set("name_helpee", this.state.helpeeName);
     bodyFormData.set("address_helpee", this.state.helpeeAddr);
     bodyFormData.set("phone_helpee", this.state.helpeePhone);
     bodyFormData.set("content", this.state.helpeeRequest);
     axios({
       method: "post",
-      url: "/",
+      url: "/helpee",
       data: bodyFormData,
       headers: { "Content-Type": "multipart/form-data" }
     })
