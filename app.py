@@ -119,6 +119,21 @@ def help():
         except Exception as e:
             # return 'There was an issue adding your task'
             return(str(e))
+    elif request.method == 'GET':
+        reqs = Todo.query.all()
+        results = [
+            {
+                "name_help" = req.name_help,
+                "content" = req.content,
+                "address_help" = req.address_help,
+                "phone_help" = req.phone_help,
+                "name_helper" = req.name_helper,
+                "address_helper" = req.address_helper,
+                "phone_helper" = req.phone_helper,
+                "pincode" = req.pincode
+            } for req in reqs]
+        ]
+        return {"count:"len(reqs), "logs":results}
 
     else:
         # tasks = Todo.query.order_by(Todo.date_created).all()
