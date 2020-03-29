@@ -64,6 +64,7 @@ class Todo(db.Model):
     def __init__(self, name_help, address_help, phone_help, content, date_created, name_helper, address_helper, phone_helper, pincode):
         self.name_help = name_help
         self.phone_help = phone_help
+        self.address_help = address_help
         self.content = content
         self.date_created = date_created
         self.name_helper = name_helper
