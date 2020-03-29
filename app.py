@@ -37,10 +37,10 @@ CORS(app)
 # app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://fzmmhnvdwnhyas:78082b19b58ea424aaddcfa7bc2d87b59610bf9826d2aee0779abb8dac22369a@ec2-18-235-97-230.compute-1.amazonaws.com:5432/d7r9sk576t8up'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/test'
-app.config['QLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-print(db.Model)
+# print(db.Model)
 
 
 class Todo(db.Model):
