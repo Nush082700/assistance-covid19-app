@@ -19,11 +19,14 @@ app = Flask(__name__, static_url_path='',
 # static_url_path='/static',
 # static_folder='/frontend/build')
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://fzmmhnvdwnhyas:78082b19b58ea424aaddcfa7bc2d87b59610bf9826d2aee0779abb8dac22369a@ec2-18-235-97-230.compute-1.amazonaws.com:5432/d7r9sk576t8up'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
 class Todo(db.Model):
+    __tablename__ = "test"
     id = db.Column(db.Integer, primary_key=True)
     name_help = db.Column(db.String(200), nullable=False)
     address_help = db.Column(db.String(1000), nullable=False)
@@ -33,6 +36,7 @@ class Todo(db.Model):
     name_helper = db.Column(db.String(200), nullable=False)
     address_helper = db.Column(db.String(1000), nullable=False)
     phone_helper = db.Column(db.Integer)
+    pincode = db.Columns(db.Integer)
 
     def _asdict(self):
         result = OrderedDict()
