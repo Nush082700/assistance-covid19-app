@@ -73,7 +73,7 @@ class RequireAssistanceForm extends Component {
     bodyFormData.set("content", this.state.helpeeRequest);
     axios({
       method: "post",
-      url: "/helpee",
+      url: "/",
       data: bodyFormData,
       headers: { "Content-Type": "multipart/form-data" }
     })
