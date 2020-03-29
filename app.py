@@ -31,7 +31,7 @@ app = Flask(__name__, static_url_path='',
             static_folder='frontend/build')
 # static_url_path='/static',
 # static_folder='/frontend/build')
-CORS(app)
+# CORS(app)
 # DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
 # app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://fzmmhnvdwnhyas:78082b19b58ea424aaddcfa7bc2d87b59610bf9826d2aee0779abb8dac22369a@ec2-18-235-97-230.compute-1.amazonaws.com:5432/d7r9sk576t8up'
@@ -43,7 +43,6 @@ db = SQLAlchemy(app)
 
 
 class Todo(db.Model):
-    __tablename__ = 'todo'
     id = db.Column(db.Integer, primary_key=True)
     name_help = db.Column(db.String(), nullable=False)
     address_help = db.Column(db.String(), nullable=False)
@@ -67,6 +66,7 @@ class Todo(db.Model):
 
 @app.route('/', methods=['POST', 'GET'])
 def help():
+    # return app.send_static_file('index.html')
     if request.method == 'POST':
         print(request.form['name_helpee'])
         name_helpee = request.form['name_helpee']
@@ -89,6 +89,24 @@ def help():
         # tasks = Todo.query.order_by(Todo.date_created).all()
         # return app .send_static_file('index.html')
         return app.send_static_file('index.html')
+
+# @app.route('/helpee', methods = ['POST','GET'])
+# def helpee():
+#     name_helpee = request.form['name_helpee']
+#         address_helpee = request.form['address_helpee']
+#         phone_helpee = request.form['phone_helpee']
+#         task_content = request.form['content']
+#         pincode_helpee = request.form['pincode']
+#         new_task = Todo(name_help=name_helpee, content=task_content,
+#                         address_help=address_helpee, phone_help=phone_helpee,
+#                         name_helper="", address_helper="", phone_helper="",pincode = "")
+
+#         try:
+#             db.session.add(new_task)
+#             db.session.commit()
+#             return redirect('/')
+#         except:
+#             return 'There was an issue adding your task'
 
 
 @app.route('/delete/<int:id>',  methods=['POST', 'GET'])
