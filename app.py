@@ -5,6 +5,7 @@ from datetime import datetime
 from flask_cors import CORS
 from collections import OrderedDict
 import os
+from flask_migrate import Migrate
 # def get_env_variable(name):
 #     try:
 #         return os.environ[name]
@@ -41,11 +42,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://fzmmhnvdwnhyas:78082b19b58ea
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+migrate = Migrate(app,db)
 # print(db.Model)
 
 
 class Todo(db.Model):
-    __tablename__ = 'test'
+    __tablename__ = 'assistance'
 
     id = db.Column(db.Integer, primary_key=True)
     name_help = db.Column(db.String(), nullable=False)
