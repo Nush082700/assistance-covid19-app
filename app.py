@@ -43,6 +43,8 @@ db = SQLAlchemy(app)
 
 
 class Todo(db.Model):
+    __tablename__ = 'test'
+
     id = db.Column(db.Integer, primary_key=True)
     name_help = db.Column(db.String(), nullable=False)
     address_help = db.Column(db.String(), nullable=False)
@@ -54,12 +56,35 @@ class Todo(db.Model):
     phone_helper = db.Column(db.Integer)
     pincode = db.Column(db.Integer)
 
+    def __init__(self, name_help, address_help, phone_help, content, date_created, name_helper, address_helper, phone_helper, pincode):
+        self.name_help = name_help
+        self.phone_help = phone_help
+        self.content = content
+        self.date_created = date_created
+        self.name_helper = name_helper
+        self.address_helper = address_helper
+        self.phone_helper = phone_helper
+        self.pincode = pincode
+                                                
     def _asdict(self):
         result = OrderedDict()
         for key in self.__mapper__.c.keys():
             result[key] = getattr(self, key)
         return result
 
+    def serialize(self):
+        return {
+            'id':self.id,
+            'name_help':self.name_help,
+            'address_help':self.address_help,
+            'phone_help':self.phone_help,
+            'content':self.content,
+            'date_created':self.sate_created,
+            'name_helper':self.name_helper,
+            'address_helper':self.address_helper,
+            'phone_helper':self.phone_helper,
+            'pincode':self.pincode
+        }
     def __repr__(self):
         return '<Task %r>' % self.id
 
@@ -87,8 +112,9 @@ def help():
             print("committing to the database")
             db.session.commit()
             return redirect('/')
-        except:
-            return 'There was an issue adding your task'
+        except Exception as e:
+            # return 'There was an issue adding your task'
+            return(str(e))
 
     else:
         # tasks = Todo.query.order_by(Todo.date_created).all()
@@ -163,11 +189,16 @@ def helper(id):
 
 @app.route('/requests/all', methods=['GET','POST'])
 def getAllRequests():
+    try:
+        reqs = Todo.query.all()
+        return jsonify([r.serialize() for r in reqs])
+    except Exception as e:
+	    return(str(e))
     # return jsonify(requests=list(Todo.query.order_by(Todo.date_created).all()))
-    temp = list(Todo.query.order_by(Todo.date_created).all())
-    reqs = list(map(lambda x: x._asdict(), temp))
+    # temp = list(Todo.query.order_by(Todo.date_created).all())
+    # reqs = list(map(lambda x: x._asdict(), temp))
     # print(type(reqs))
-    return jsonify(requests=reqs)
+    # return jsonify(requests=reqs)
 
 
 if __name__ == "__main__":
