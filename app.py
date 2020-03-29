@@ -68,10 +68,13 @@ class Todo(db.Model):
 def help():
     # return app.send_static_file('index.html')
     if request.method == 'POST':
-        # print(request.form['name_help'])
+        print(request.form['name_help'])
         name_helpee = request.form['name_help']
+        print(request.form['address_help'])
         address_helpee = request.form['address_help']
+        print(request.form['phone_help'])
         phone_helpee = request.form['phone_help']
+        print(request.form['content'])
         task_content = request.form['content']
         # pincode_helpee = request.form['pincode']
         new_task = Todo(name_help=name_helpee, content=task_content,
@@ -79,7 +82,9 @@ def help():
                         name_helper="", address_helper="", phone_helper="",pincode = "")
 
         try:
+            print("Adding to the database")
             db.session.add(new_task)
+            print("committing to the database")
             db.session.commit()
             return redirect('/')
         except:

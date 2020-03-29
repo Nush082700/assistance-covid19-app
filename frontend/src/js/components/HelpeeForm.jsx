@@ -68,8 +68,11 @@ class RequireAssistanceForm extends Component {
     var bodyFormData = new FormData();
     console.log("the error is here bodyFormData");
     bodyFormData.set("name_help", this.state.helpeeName);
+    console.log("the error is here name_help");
     bodyFormData.set("address_help", this.state.helpeeAddr);
+    console.log("the error is here address_help");
     bodyFormData.set("phone_help", this.state.helpeePhone);
+    console.log("the error is here phone_help");
     bodyFormData.set("content", this.state.helpeeRequest);
     axios({
       method: "post",
