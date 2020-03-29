@@ -189,16 +189,16 @@ def helper(id):
 
 @app.route('/requests/all', methods=['GET','POST'])
 def getAllRequests():
-    try:
-        reqs = Todo.query.all()
-        return jsonify([r.serialize() for r in reqs])
-    except Exception as e:
-	    return(str(e))
+    # try:
+    #     reqs = Todo.query.all()
+    #     return jsonify([r.serialize() for r in reqs])
+    # except Exception as e:
+	#     return(str(e))
     # return jsonify(requests=list(Todo.query.order_by(Todo.date_created).all()))
-    # temp = list(Todo.query.order_by(Todo.date_created).all())
-    # reqs = list(map(lambda x: x._asdict(), temp))
+    temp = list(Todo.query.order_by(Todo.date_created).all())
+    reqs = list(map(lambda x: x._asdict(), temp))
     # print(type(reqs))
-    # return jsonify(requests=reqs)
+    return jsonify(requests=reqs)
 
 
 if __name__ == "__main__":
