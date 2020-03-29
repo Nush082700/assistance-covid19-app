@@ -29,8 +29,8 @@ class DictSerializable(object):
 
 app = Flask(__name__, static_url_path='',
             static_folder='frontend/build')
-app.logger.addHandler(logging.StreamHandler(sys.stdout))
-app.logger.setLevel(logging.ERROR)
+# app.logger.addHandler(logging.StreamHandler(sys.stdout))
+# app.logger.setLevel(logging.ERROR)
 # static_url_path='/static',
 # static_folder='/frontend/build')
 CORS(app)
