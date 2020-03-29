@@ -51,13 +51,13 @@ class Todo(db.Model):
     __tablename__ = 'assistance'
 
     id = db.Column(db.Integer, primary_key=True)
-    name_help = db.Column(db.String(), nullable=False)
-    address_help = db.Column(db.String(), nullable=False)
+    name_help = db.Column(db.String())
+    address_help = db.Column(db.String())
     phone_help = db.Column(db.BigInteger)
-    content = db.Column(db.String(), nullable=False)
+    content = db.Column(db.String())
     date_created = db.Column(db.Integer)
-    name_helper = db.Column(db.String(), nullable=False)
-    address_helper = db.Column(db.String(), nullable=False)
+    name_helper = db.Column(db.String())
+    address_helper = db.Column(db.String())
     phone_helper = db.Column(db.BigInteger)
     pincode = db.Column(db.Integer)
 
