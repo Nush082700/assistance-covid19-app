@@ -68,10 +68,10 @@ class Todo(db.Model):
 def help():
     # return app.send_static_file('index.html')
     if request.method == 'POST':
-        print(request.form['name_helpee'])
-        name_helpee = request.form['name_helpee']
-        address_helpee = request.form['address_helpee']
-        phone_helpee = request.form['phone_helpee']
+        print(request.form['name_help'])
+        name_helpee = request.form['name_help']
+        address_helpee = request.form['address_help']
+        phone_helpee = request.form['phone_help']
         task_content = request.form['content']
         pincode_helpee = request.form['pincode']
         new_task = Todo(name_help=name_helpee, content=task_content,

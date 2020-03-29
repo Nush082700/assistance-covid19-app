@@ -67,13 +67,13 @@ class RequireAssistanceForm extends Component {
     console.log("here4");
     var bodyFormData = new FormData();
     console.log("the error is here bodyFormData");
-    bodyFormData.set("name_helpee", this.state.helpeeName);
-    bodyFormData.set("address_helpee", this.state.helpeeAddr);
-    bodyFormData.set("phone_helpee", this.state.helpeePhone);
+    bodyFormData.set("name_help", this.state.helpeeName);
+    bodyFormData.set("address_help", this.state.helpeeAddr);
+    bodyFormData.set("phone_help", this.state.helpeePhone);
     bodyFormData.set("content", this.state.helpeeRequest);
     axios({
       method: "post",
-      url: "/",
+      url: "/helpee",
       data: bodyFormData,
       headers: { "Content-Type": "multipart/form-data" }
     })
