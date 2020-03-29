@@ -109,8 +109,7 @@ def help():
         task_content = request.form['content']
         # pincode_helpee = request.form['pincode']
         new_task = Todo(name_help=name_helpee, content=task_content,
-                        address_help=address_helpee, phone_help=phone_helpee,
-                        name_helper="", address_helper="", phone_helper="",pincode = "", date_created = "")
+                        address_help=address_helpee, phone_help=phone_helpee)
 
         try:
             print("Adding to the database")
