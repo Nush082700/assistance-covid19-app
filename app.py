@@ -38,7 +38,7 @@ app = Flask(__name__, static_url_path='',
 CORS(app)
 # DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
 # app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://fzmmhnvdwnhyas:78082b19b58ea424aaddcfa7bc2d87b59610bf9826d2aee0779abb8dac22369a@ec2-18-235-97-230.compute-1.amazonaws.com:5432/d7r9sk576t8up'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql-curly-10292'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/test'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -224,19 +224,14 @@ def getAllRequests():
     return jsonify(requests=reqs)
 
 
-@app.route('/requests/all/test', methods=['GET', 'POST'])
-def getAllRequestsTest():
-    # try:
-    #     reqs = Todo.query.all()
-    #     return jsonify([r.serialize() for r in reqs])
-    # except Exception as e:
-    #     return(str(e))
-    # return jsonify(requests=list(Todo.query.order_by(Todo.date_created).all()))
-    # temp = list(Todo.query.order_by(Todo.date_created).all())
-    temp = list(Todo.query.all())
-    reqs = list(map(lambda x: x._asdict(), temp))
-    # print(type(reqs))
-    return jsonify(requests=reqs)
+@app.route('/pins/<int:pincode>', methods=['GET', 'POST'])
+def getPincode(pincode):
+    if Todo.query.filter_by(pincode=pincode).count() > 0:
+        logs = list(Todo.query.filter_by(pincode=pincode))
+        reqs = list(map(lambda x: x._asdict(), logs))
+        return jsonify(requests=reqs)
+    else:
+        return jsonify(requests=[])
 
 
 if __name__ == "__main__":
