@@ -43,7 +43,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://fzmmhnvdwnhyas:78082b19b58ea
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
-migrate = Migrate(app,db)
+migrate = Migrate(app, db)
 # print(db.Model)
 
 
@@ -71,7 +71,7 @@ class Todo(db.Model):
         self.address_helper = address_helper
         self.phone_helper = phone_helper
         self.pincode = pincode
-                                                
+
     def _asdict(self):
         result = OrderedDict()
         for key in self.__mapper__.c.keys():
@@ -80,17 +80,18 @@ class Todo(db.Model):
 
     def serialize(self):
         return {
-            'id':self.id,
-            'name_help':self.name_help,
-            'address_help':self.address_help,
-            'phone_help':self.phone_help,
-            'content':self.content,
-            'date_created':self.sate_created,
-            'name_helper':self.name_helper,
-            'address_helper':self.address_helper,
-            'phone_helper':self.phone_helper,
-            'pincode':self.pincode
+            'id': self.id,
+            'name_help': self.name_help,
+            'address_help': self.address_help,
+            'phone_help': self.phone_help,
+            'content': self.content,
+            'date_created': self.sate_created,
+            'name_helper': self.name_helper,
+            'address_helper': self.address_helper,
+            'phone_helper': self.phone_helper,
+            'pincode': self.pincode
         }
+
     def __repr__(self):
         return '<Task %r>' % self.id
 
@@ -110,7 +111,7 @@ def help():
         # pincode_helpee = request.form['pincode']
         new_task = Todo(name_help=name_helpee, content=task_content,
                         address_help=address_helpee, phone_help=phone_helpee,
-                        name_helper="", address_helper="", phone_helper="",pincode = "", date_created = "")
+                        name_helper="", address_helper="", phone_helper="", pincode="", date_created="")
 
         try:
             print("Adding to the database")
@@ -208,13 +209,28 @@ def helper(id):
         return render_template('helper.html', task=task)
 
 
-@app.route('/requests/all', methods=['GET','POST'])
+@app.route('/requests/all', methods=['GET', 'POST'])
 def getAllRequests():
     # try:
     #     reqs = Todo.query.all()
     #     return jsonify([r.serialize() for r in reqs])
     # except Exception as e:
-	#     return(str(e))
+    #     return(str(e))
+    # return jsonify(requests=list(Todo.query.order_by(Todo.date_created).all()))
+    # temp = list(Todo.query.order_by(Todo.date_created).all())
+    temp = list(Todo.query.all())
+    reqs = list(map(lambda x: x._asdict(), temp))
+    # print(type(reqs))
+    return jsonify(requests=reqs)
+
+
+@app.route('/requests/all/test', methods=['GET', 'POST'])
+def getAllRequests():
+    # try:
+    #     reqs = Todo.query.all()
+    #     return jsonify([r.serialize() for r in reqs])
+    # except Exception as e:
+    #     return(str(e))
     # return jsonify(requests=list(Todo.query.order_by(Todo.date_created).all()))
     # temp = list(Todo.query.order_by(Todo.date_created).all())
     temp = list(Todo.query.all())
