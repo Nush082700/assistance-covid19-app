@@ -16,14 +16,24 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x]
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: cd frontend && npm install
+    - run: cd frontend && npm run build --if-present
     - uses: actions/checkout@v1
     - name: Push to Heroku
       env: 
         HEROKU_API_KEY: 452c187e-fe93-4469-bb17-f0ce0afbcb3e
         HEROKU_APP_NAME: assistance-log-covid19-test 
-      run: git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git origin/dev:dev 
+      run: git push https://heroku:452c187e-fe93-4469-bb17-f0ce0afbcb3e@git.heroku.com/assistance-log-covid19-test.git origin/dev:dev
+ 
 
    
