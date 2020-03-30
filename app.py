@@ -38,7 +38,7 @@ app = Flask(__name__, static_url_path='',
 CORS(app)
 # DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
 # app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://fzmmhnvdwnhyas:78082b19b58ea424aaddcfa7bc2d87b59610bf9826d2aee0779abb8dac22369a@ec2-18-235-97-230.compute-1.amazonaws.com:5432/d7r9sk576t8up'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://yvsdbbygynanhv:4621ee9546238883d5abdd451d7a7b6f579e4f8242ca2aa57c8bee4110cc95c7@ec2-54-157-78-113.compute-1.amazonaws.com:5432/d20701ijn8dq6g'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/test'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -108,10 +108,10 @@ def help():
         phone_helpee = request.form['phone_help']
         print(request.form['content'])
         task_content = request.form['content']
-        # pincode_helpee = request.form['pincode']
+        pincode_helpee = request.form['pincode']
         new_task = Todo(name_help=name_helpee, content=task_content,
                         address_help=address_helpee, phone_help=phone_helpee,
-                        name_helper="", address_helper="", phone_helper="", pincode="", date_created="")
+                        name_helper="", address_helper="", phone_helper="", pincode=pincode_helpee, date_created="")
 
         try:
             print("Adding to the database")
@@ -224,19 +224,14 @@ def getAllRequests():
     return jsonify(requests=reqs)
 
 
-@app.route('/requests/all/test', methods=['GET', 'POST'])
-def getAllRequestsTest():
-    # try:
-    #     reqs = Todo.query.all()
-    #     return jsonify([r.serialize() for r in reqs])
-    # except Exception as e:
-    #     return(str(e))
-    # return jsonify(requests=list(Todo.query.order_by(Todo.date_created).all()))
-    # temp = list(Todo.query.order_by(Todo.date_created).all())
-    temp = list(Todo.query.all())
-    reqs = list(map(lambda x: x._asdict(), temp))
-    # print(type(reqs))
-    return jsonify(requests=reqs)
+@app.route('/pins/<int:pincode>', methods=['GET', 'POST'])
+def getPincode(pincode):
+    if Todo.query.filter_by(pincode=pincode).count() > 0:
+        logs = list(Todo.query.filter_by(pincode=pincode))
+        reqs = list(map(lambda x: x._asdict(), logs))
+        return jsonify(requests=reqs)
+    else:
+        return jsonify(requests=[])
 
 
 if __name__ == "__main__":
