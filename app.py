@@ -225,7 +225,7 @@ def getAllRequests():
 
 
 @app.route('/requests/all/test', methods=['GET', 'POST'])
-def getAllRequests():
+def getAllRequestsTest():
     # try:
     #     reqs = Todo.query.all()
     #     return jsonify([r.serialize() for r in reqs])
