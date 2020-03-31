@@ -24,6 +24,7 @@ jobs:
       env: 
         HEROKU_API_KEY: 452c187e-fe93-4469-bb17-f0ce0afbcb3e
         HEROKU_APP_NAME: assistance-log-covid19-test 
-      run: git push https://heroku:$HEROKU_API_TOKEN@git.heroku.com/$HEROKU_APP_NAME.git origin/dev:dev 
+      run: git push https://heroku:452c187e-fe93-4469-bb17-f0ce0afbcb3e@git.heroku.com/assistance-log-covid19-test.git origin/dev:dev
+ 
 
    
