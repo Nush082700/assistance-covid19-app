@@ -38,7 +38,8 @@ app = Flask(__name__, static_url_path='',
 CORS(app)
 # DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER,pw=POSTGRES_PW,url=POSTGRES_URL,db=POSTGRES_DB)
 # app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://yvsdbbygynanhv:4621ee9546238883d5abdd451d7a7b6f579e4f8242ca2aa57c8bee4110cc95c7@ec2-54-157-78-113.compute-1.amazonaws.com:5432/d20701ijn8dq6g'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://yvsdbbygynanhv:4621ee9546238883d5abdd451d7a7b6f579e4f8242ca2aa57c8bee4110cc95c7@ec2-54-157-78-113.compute-1.amazonaws.com:5432/d20701ijn8dq6g'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://fzmmhnvdwnhyas:78082b19b58ea424aaddcfa7bc2d87b59610bf9826d2aee0779abb8dac22369a@ec2-18-235-97-230.compute-1.amazonaws.com:5432/d7r9sk576t8up'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/test'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -111,11 +112,7 @@ def help():
         pincode_helpee = request.form['pincode']
         new_task = Todo(name_help=name_helpee, content=task_content,
                         address_help=address_helpee, phone_help=phone_helpee,
-<<<<<<< HEAD
-                        name_helper="", address_helper="", phone_helper=0,pincode = 0, date_created = 0)
-=======
                         name_helper="", address_helper="", phone_helper=0, pincode=pincode_helpee, date_created=0)
->>>>>>> dev
 
         try:
             print("Adding to the database")
