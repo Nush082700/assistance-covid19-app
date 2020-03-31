@@ -11,7 +11,8 @@ class RequireAssistanceForm extends Component {
       helpeeAddr: "",
       helpeePhone: "",
       helpeeRequest: "",
-      error: ""
+      error: "",
+      pin: ""
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -34,7 +35,8 @@ class RequireAssistanceForm extends Component {
       !this.state.helpeeAddr ||
       !this.state.helpeeName ||
       !this.state.helpeePhone ||
-      !this.state.helpeeRequest
+      !this.state.helpeeRequest ||
+      !this.state.pin
     ) {
       this.setState({
         error: "Error: Field Empty: Please fill all Fields"
@@ -45,6 +47,13 @@ class RequireAssistanceForm extends Component {
     if (this.state.helpeePhone.length != 10) {
       this.setState({
         error: "Please enter a valid 10 digit phone number"
+      });
+      return;
+    }
+    if (this.state.pin.length != 6) {
+      console.log("pin");
+      this.setState({
+        error: "Please enter a valid 6 digit pin code"
       });
       return;
     }
@@ -74,6 +83,7 @@ class RequireAssistanceForm extends Component {
     bodyFormData.set("phone_help", this.state.helpeePhone);
     console.log("the error is here phone_help");
     bodyFormData.set("content", this.state.helpeeRequest);
+    bodyFormData.set("pincode", this.state.pin);
     axios({
       method: "post",
       url: "/",
@@ -127,6 +137,16 @@ class RequireAssistanceForm extends Component {
               placeholder="Phone Number"
               value={this.state.helpeePhone}
               name="helpeePhone"
+              onChange={this.handleChange}
+            />
+          </label>
+          <label>
+            <input
+              // type='password'
+              type="nubers"
+              placeholder="Pin Code"
+              value={this.state.pin}
+              name="pin"
               onChange={this.handleChange}
             />
           </label>
