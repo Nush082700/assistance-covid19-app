@@ -221,7 +221,7 @@ def get_dist(obj,slong, slat, elong, elat):
 """
 return the json of the objects sorted by ascending order of closest distance
 """
-@app.route('/requests', methods =['GET','POST'])
+@app.route('/requestsLatLong', methods =['GET','POST'])
 def closest_points():
     lat_helper = request.args.get('lat_helper', None)
     long_helper = request.args.get('long_helper', None)
