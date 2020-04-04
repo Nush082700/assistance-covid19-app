@@ -5,7 +5,8 @@ from flask_cors import CORS
 from collections import OrderedDict
 import os
 from flask_migrate import Migrate
-from math import radians, cos, sin, asin, sqrt
+from math import radians, cos, sin, asin, sqrt, acos
+from operator import itemgetter
 
 class DictSerializable(object):
     def _asdict(self):
@@ -38,49 +39,59 @@ class Todo(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name_help = db.Column(db.String(), default = "t")
-    address_help_line1 = db.Column(db.String(), default = "t")
-    address_help_line2 = db.Column(db.String(), default = "t")
-    address_help_sector = db.Column(db.String(), default = "t")
-    address_help_city = db.Column(db.String(), default = "t")
-    address_help_state = db.Column(db.String(), default = "t")
-    address_help_country = db.Column(db.String(), default = "t")
-    address_help_pincode = db.Column(db.Integer, default = 0)
+    # address_help_line1 = db.Column(db.String(), default = "t")
+    # address_help_line2 = db.Column(db.String(), default = "t")
+    # address_help_sector = db.Column(db.String(), default = "t")
+    # address_help_city = db.Column(db.String(), default = "t")
+    # address_help_state = db.Column(db.String(), default = "t")
+    # address_help_country = db.Column(db.String(), default = "t")
+    # address_help_pincode = db.Column(db.Integer, default = 0)
+    lat_help = db.Column(db.Float)
+    long_help = db.Column(db.Float)
     phone_help = db.Column(db.BigInteger, default = 0)
     content = db.Column(db.String(), default = "t")
     name_helper = db.Column(db.String(), default = "t")
-    address_helper_line1 = db.Column(db.String(), default = "t")
-    address_helper_line2 = db.Column(db.String(), default = "t")
-    address_help_sector = db.Column(db.String(), default = "t")
-    address_helper_city = db.Column(db.String(), default = "t")
-    address_helper_state = db.Column(db.String(), default = "t")
-    address_helper_country = db.Column(db.String(), default = "t")
-    address_helper_pincode = db.Column(db.Integer, default = 0)
+    # address_helper_line1 = db.Column(db.String(), default = "t")
+    # address_helper_line2 = db.Column(db.String(), default = "t")
+    # address_help_sector = db.Column(db.String(), default = "t")
+    # address_helper_city = db.Column(db.String(), default = "t")
+    # address_helper_state = db.Column(db.String(), default = "t")
+    # address_helper_country = db.Column(db.String(), default = "t")
+    # address_helper_pincode = db.Column(db.Integer, default = 0)
     phone_helper = db.Column(db.BigInteger, default = 0)
+    lat_helper = db.Column(db.Float)
+    long_helper = db.Column(db.Float)
+
     
 
-    def __init__(self, name_help, phone_help, content, date_created, name_helper, phone_helper,
-    address_help_line1, address_help_line2, address_help_sector, address_help_city, address_help_state, address_help_country, address_help_pincode,
-    address_helper_line1, address_helper_line2, address_helper_sector, address_helper_city, address_helper_state, address_helper_country, address_helper_pincode):
+    # def __init__(self, name_help, phone_help, content, date_created, name_helper, phone_helper,
+    # address_help_line1, address_help_line2, address_help_sector, address_help_city, address_help_state, address_help_country, address_help_pincode,
+    # address_helper_line1, address_helper_line2, address_helper_sector, address_helper_city, address_helper_state, address_helper_country, address_helper_pincode,
+    # lat_help, long_help, lat_helper, long_helper):
+    def __init__(self, name_help, phone_help, content, name_helper, phone_helper,lat_help, long_help, lat_helper, long_helper):
         self.name_help = name_help
         self.phone_help = phone_help
         self.content = content
-        self.date_created = date_created
         self.name_helper = name_helper
         self.phone_helper = phone_helper
-        self.address_help_line1 = address_help_line1
-        self.address_help_line2 = address_help_line2
-        self.address_help_sector = address_help_sector
-        self.address_help_city = address_help_city
-        self.address_help_state = address_help_state
-        self.address_help_country = address_help_country
-        self.address_help_pincode = address_help_pincode
-        self.address_helper_line1 = address_helper_line1
-        self.address_helper_line2 = address_helper_line2
-        self.address_helper_sector = address_helper_sector
-        self.address_helper_city = address_helper_city
-        self.address_helper_state = address_helper_state
-        self.address_helper_country = address_helper_country
-        self.address_helper_pincode = address_helper_pincode
+        # self.address_help_line1 = address_help_line1
+        # self.address_help_line2 = address_help_line2
+        # self.address_help_sector = address_help_sector
+        # self.address_help_city = address_help_city
+        # self.address_help_state = address_help_state
+        # self.address_help_country = address_help_country
+        # self.address_help_pincode = address_help_pincode
+        # self.address_helper_line1 = address_helper_line1
+        # self.address_helper_line2 = address_helper_line2
+        # self.address_helper_sector = address_helper_sector
+        # self.address_helper_city = address_helper_city
+        # self.address_helper_state = address_helper_state
+        # self.address_helper_country = address_helper_country
+        # self.address_helper_pincode = address_helper_pincode
+        self.lat_help = lat_help
+        self.long_help = long_help
+        self.lat_helper = lat_helper
+        self.long_helper = long_helper
         
     def _asdict(self):
         result = OrderedDict()
@@ -90,29 +101,41 @@ class Todo(db.Model):
 
     def __repr__(self):
         return '<Task %r>' % self.id
-
+    
+    def get_lat_help(self):
+        return self.lat_help
+    
+    def get_long_help(self):
+        return self.long_help
+    
+    def get_id(self):
+        return self.id
 
 @app.route('/', methods=['POST', 'GET'])
 def help():
     # return app.send_static_file('index.html')
     if request.method == 'POST':
         name_helpee = request.form['name_help']
-        address_helpee_line1 = request.form['address_help_line1']
-        address_helpee_line2 = request.form['address_help_line2']
-        address_help_sector = request.form ['address_help_sector']
-        address_help_city = request.form['address_help_city']
-        address_help_state = request.form['address_help_state']
-        address_help_country = request.form['address_help_country']
-        address_help_pincode = request.form ['address_help_pincode']
+        # address_helpee_line1 = request.form['address_help_line1']
+        # address_helpee_line2 = request.form['address_help_line2']
+        # address_help_sector = request.form ['address_help_sector']
+        # address_help_city = request.form['address_help_city']
+        # address_help_state = request.form['address_help_state']
+        # address_help_country = request.form['address_help_country']
+        # address_help_pincode = request.form ['address_help_pincode']
         phone_helpee = request.form['phone_help']
         task_content = request.form['content']
-        new_task = Todo(name_help=name_helpee, content=task_content, phone_help=phone_helpee,
-        address_helpee_line1=address_helpe_line1, address_helpee_line2=address_helpe_line2, 
-        address_help_sector=address_help_sector,address_help_city=address_help_city,address_help_state=address_help_state,
-        address_help_country=address_help_country,address_help_pincode=address_help_pincode,
-        address_helper_line1="", address_helper_line="", address_helper_sector="", address_helper_city="",address_helper_state="",
-        address_helper_country="",address_helper_pincode="",
-                        name_helper="", phone_helper=0, )
+        lat_help = request.form['lat_help']
+        long_help = request.form['long_help']
+        # new_task = Todo(name_help=name_helpee, content=task_content, phone_help=phone_helpee,
+        # address_helpee_line1=address_helpe_line1, address_helpee_line2=address_helpe_line2, 
+        # address_help_sector=address_help_sector,address_help_city=address_help_city,address_help_state=address_help_state,
+        # address_help_country=address_help_country,address_help_pincode=address_help_pincode,
+        # address_helper_line1="", address_helper_line="", address_helper_sector="", address_helper_city="",address_helper_state="",
+        # address_helper_country="",address_helper_pincode="",
+        #                 name_helper="", phone_helper=0,lat_help = lat_help, long_help=long_help, lat_helper = 0.0, long_helper = 0.0)
+        new_task = Todo(name_help = name_helpee, content=task_content, phone_help = phone_helpee, 
+        lat_help = lat_help, long_help = long_help, name_helper="", phone_helper=0, lat_helper=0.0, long_helper=0.0)
 
         try:
             print("Adding to the database")
@@ -162,14 +185,16 @@ def helper(id):
 
     if request.method == 'POST':
         task.name_helper = request.form['name_helper']
-        task.address_helper_line1 = request.form['address_helper_line1']
-        task.address_helper_line2 = request.form['address_helper_line2']
-        task.address_helper_sector = request.form['address_helper_sector']
-        task.address_helper_city = request.form['address_helper_city']
-        task.address_helper_state = request.form['address_helper_state']
-        task.address_helper_country = request.form['address_helper_country']
-        task.address_helper_pincode = request.form['address_helper_pincode']
+        # task.address_helper_line1 = request.form['address_helper_line1']
+        # task.address_helper_line2 = request.form['address_helper_line2']
+        # task.address_helper_sector = request.form['address_helper_sector']
+        # task.address_helper_city = request.form['address_helper_city']
+        # task.address_helper_state = request.form['address_helper_state']
+        # task.address_helper_country = request.form['address_helper_country']
+        # task.address_helper_pincode = request.form['address_helper_pincode']
         task.phone_helper = request.form['phone_helper']
+        task.lat_helper = request.form['lat_helper']
+        task.long_helper = request.form['long_helper']
 
         try:
             db.session.commit()
@@ -187,13 +212,38 @@ def getAllRequests():
     return jsonify(requests=reqs)
 
 """
+Returns the distance between two pairs of latitudes and longitudes in KM.
+"""
+def get_dist(obj,slong, slat, elong, elat):
+    dist = 6371.01 * acos(sin(slat)*sin(elat) + cos(slat)*cos(elat)*cos(slong - elong))
+    return (obj,dist)
+    
+"""
+return the json of the objects sorted by ascending order of closest distance
+"""
+@app.route('/requests', methods =['GET','POST'])
+def closest_points():
+    lat_helper = request.args.get('lat_helper', None)
+    long_helper = request.args.get('long_helper', None)
+    lst_objects =  list(Todo.query.all())
+    fin_vals = sorted(list(map(lambda x: get_dist(x,x.get_long_help(), x.get_lat_help(), long_helper, lat_helper), lst_objects)), key=itemgetter(1))
+    n_lst = [x[0] for x in fin_vals]
+    reqs = list(map(lambda x:x._asdict(),n_lst))
+    return jsonify(requests=reqs)
+
+if __name__ == "__main__":
+    app.run()
+
+"""
+COMMENTED OUT STUFF
+
 I have created a more detailed address set for which we need to be very specific on what
 should be entered. The prompts should be as such:
 Line 1 -> House Number / Flat + Tower Number
 Line 2 -> Street / Society
 Sector -> Sector / county
 city, state, country -> self explanatory
-"""
+
 @app.route('/area/<string:line2>', methods=['GET', 'POST'])
 def getPincode(line2):
     if Todo.query.filter_by(address_help_line2=line2).count() > 0:
@@ -202,7 +252,6 @@ def getPincode(line2):
         return jsonify(requests=reqs)
     else:
         return jsonify(requests=[])
+"""
 
 
-if __name__ == "__main__":
-    app.run()
