@@ -75,9 +75,9 @@ class SignUp extends Component {
 	};
 
 	render() {
-		if (this.props.redirect) {
-			return <Redirect to={this.props.redirect} />;
-		}
+		// if (this.props.redirect) {
+		// 	return <Redirect to={this.props.redirect} />;
+		// }
 
 		return (
 			<div class='home-page'>

@@ -12,7 +12,7 @@ class Login extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			name: '',
+			email: '',
 			addr: '',
 			phone: '',
 			pwd: '',
@@ -36,23 +36,29 @@ class Login extends Component {
 
 	handleSubmit = async (event) => {
 		this.setState({ error: '' });
-		if (!this.state.name || !this.state.pwd) {
+		if (!this.state.email || !this.state.pwd) {
 			this.setState({
 				error: 'Error: Field Empty: Please fill all Fields',
 			});
 			return;
 		}
+		if (!this.validateEmail(this.state.email)) {
+			this.setState({
+				error: 'Please enter a valid email',
+			});
+			return;
+		}
 
 		var bodyFormData = new FormData();
-		bodyFormData.set('userName', this.state.name);
+		bodyFormData.set('email', this.state.email);
 		bodyFormData.set('password', this.state.pwd);
 		this.props.login(bodyFormData);
 	};
 
 	render() {
-		if (this.props.redirect) {
-			return <Redirect to={this.props.redirect} />;
-		}
+		// if (this.props.redirect) {
+		// 	return <Redirect to={this.props.redirect} />;
+		// }
 		return (
 			<div class='home-page'>
 				<form>
@@ -62,9 +68,9 @@ class Login extends Component {
 					<label>
 						<input
 							type='text'
-							placeholder='UserName'
-							value={this.state.name}
-							name='name'
+							placeholder='Email'
+							value={this.state.email}
+							name='email'
 							onChange={this.handleChange}
 						/>
 					</label>
@@ -105,14 +111,14 @@ class Login extends Component {
 					>
 						Log in
 					</button>
-					<button
+					{/* <button
 						class='red'
 						type='button'
-						onClick={this.handleSubmit}
+						onClick={this.props.history.push('/signUp')}
 						style={{ marginTop: 20 }}
 					>
 						Dont have an account?
-					</button>
+					</button> */}
 					{(this.state.error || this.props.error) && (
 						<div class='card-container'>
 							<h3 class='error'>

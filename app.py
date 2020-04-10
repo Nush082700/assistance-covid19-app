@@ -16,6 +16,7 @@ from flask_login import LoginManager, login_user, login_required, logout_user, U
 app = Flask(__name__, static_url_path='',
             static_folder='frontend/build')
 CORS(app)
+app.config['SECRET_KEY'] = '88ce7599461ab697885b739ad0971f37d1fb9d3d758dc726fea9c586d07b7ff6'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://yvsdbbygynanhv:4621ee9546238883d5abdd451d7a7b6f579e4f8242ca2aa57c8bee4110cc95c7@ec2-54-157-78-113.compute-1.amazonaws.com:5432/d20701ijn8dq6g'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://fzmmhnvdwnhyas:78082b19b58ea424aaddcfa7bc2d87b59610bf9826d2aee0779abb8dac22369a@ec2-18-235-97-230.compute-1.amazonaws.com:5432/d7r9sk576t8up'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -35,7 +36,7 @@ class User(UserMixin, db.Model):
     __tablename__ = 'User'
 
     UserId = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
-    UserName = db.Column(db.String(25), nullable=False, unique=True)
+    UserName = db.Column(db.String(25), nullable=False, unique=False)
     Email = db.Column(db.String, nullable=False, unique=True)
     password_hash = db.Column(db.String, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
@@ -50,6 +51,9 @@ class User(UserMixin, db.Model):
         self.Email = Email
         self.latitude = latitude
         self.longitude = longitude
+
+    def get_id(self):
+        return (self.UserId)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -122,14 +126,20 @@ If the values don't match, we return an empty json
 
 @app.route('/api/login', methods=['POST'])
 def login():
-    user_name = request.form['userName']
+    email = request.form['email']
     pwd = request.form['password']
-    user = User.query.filter_by(UserName=user_name).first()
+    print(email)
+    user = list(User.query.filter_by(Email=email))
+    if (len(user) < 1):
+        return jsonify(error="No User by this email"), status.HTTP_406_NOT_ACCEPTABLE
+
+    user = user[0]
+    print(user)
     if user is None or not user.check_password(pwd):
         return jsonify(error="Credentials dont match"), status.HTTP_401_UNAUTHORIZED
     else:
         login_user(user)
-        return jsonfiy(UserID=user.UserID,
+        return jsonify(user=user.get_id(),
                        latitude=user.latitude, longitude=user.longitude), status.HTTP_202_ACCEPTED
 
 
@@ -253,7 +263,17 @@ def helper(id):
 def getAllRequests():
     temp = list(Todo.query.all())
     reqs = list(map(lambda x: x._asdict(), temp))
-    return jsonify(requests=reqs)
+    return jsonify(requests=reqs), status.HTTP_201_CREATED
+
+# for debugging
+@app.route('/api/users/all', methods=['GET', 'POST'])
+def getAllUsers():
+    temp = list(User.query.filter_by(Email="i@gmail.com"))
+    print(temp)
+    reqs = list(map(lambda x: x.Email, temp))
+    # print(temp)
+    reqs = reqs[0]
+    return jsonify(requests=reqs), status.HTTP_201_CREATED
 
 
 """
@@ -288,7 +308,7 @@ def closest_points():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
 
 """
 Commenting delete and update for now as it will change later

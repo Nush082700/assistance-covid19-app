@@ -19,9 +19,10 @@ export default class Home extends Component {
 		if (!this.state.pin) {
 			console.log('woohoo');
 			axios({
-				method: 'get',
-				url: '/requests/all',
+				method: 'post',
+				url: 'http://localhost:5000/api/requests/all',
 			}).then((res) => {
+				console.log(res);
 				// this.setState()
 				let gotResponse = [];
 				let needResponse = [];

@@ -19,7 +19,7 @@ export const login = (bodyFormData) => {
 				dispatch(actions.loginSuccess(res.data));
 			})
 			.catch((res) => {
-				dispatch(actions.loginFailed(res.data));
+				dispatch(actions.loginFailed(res.response.data));
 			});
 	};
 };
@@ -39,7 +39,7 @@ export const signUp = (bodyFormData) => {
 			})
 			.catch((res) => {
 				console.log(res);
-				dispatch(actions.signUpFailed(res));
+				dispatch(actions.signUpFailed(res.response.data));
 			});
 	};
 };
