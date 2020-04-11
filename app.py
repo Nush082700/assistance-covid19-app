@@ -28,16 +28,16 @@ login_manager.init_app(app)
 
 
 @login_manager.user_loader
-def load_user(UserId):
-    return User.query.filter(User.UserId == int(id)).first()
+def load_user(user_id):
+    return User.query.filter(User.user_id == int(id)).first()
 
 
 class User(UserMixin, db.Model):
     __tablename__ = 'User'
 
-    UserId = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
-    UserName = db.Column(db.String(25), nullable=False, unique=False)
-    Email = db.Column(db.String, nullable=False, unique=True)
+    user_id = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    user_name = db.Column(db.String(25), nullable=False, unique=False)
+    email = db.Column(db.String, nullable=False, unique=True)
     password_hash = db.Column(db.String, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
@@ -46,14 +46,14 @@ class User(UserMixin, db.Model):
     Helper_logs = db.relationship(
         "Todo", backref="Helper", lazy="dynamic", foreign_keys='Todo.helper_id')
 
-    def __init__(self, UserName, Email, latitude, longitude):
-        self.UserName = UserName
-        self.Email = Email
+    def __init__(self, user_name, email, latitude, longitude):
+        self.user_name = user_name
+        self.email = email
         self.latitude = latitude
         self.longitude = longitude
 
     def get_id(self):
-        return (self.UserId)
+        return (self.user_id)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -73,23 +73,17 @@ class Todo(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     helpee_id = db.Column(db.Integer, db.ForeignKey(
-        'User.UserId'), nullable=False)
-    name_help = db.Column(db.String())
-    phone_help = db.Column(db.BigInteger)
+        'User.user_id'), nullable=False)
     content = db.Column(db.String())
+    short_content = db.Column(db.String())
     helper_id = db.Column(db.Integer, db.ForeignKey(
-        'User.UserId'), nullable=False)
-    name_helper = db.Column(db.String())
-    phone_helper = db.Column(db.BigInteger)
+        'User.user_id'), nullable=False)
 
-    def __init__(self, name_help, phone_help, content, name_helper, phone_helper, helpee_id, helper_id):
-        self.name_help = name_help
-        self.phone_help = phone_help
+    def __init__(self, content, helpee_id, short_content, helper_id=0):
         self.content = content
-        self.name_helper = name_helper
-        self.phone_helper = phone_helper
         self.helpee_id = helpee_id
         self.helper_id = helper_id
+        self.short_content = short_content
 
     def _asdict(self):
         result = OrderedDict()
@@ -117,7 +111,7 @@ def filt_None(obj):
 
 
 """
-Assuming that the create-react-app/frontend is giving me the username and password.
+Assuming that the create-react-app/frontend is giving me the user_name and password.
 If the values match, we return a json with the id of the user and their location(i.e the latitude
 and longitude attached with the user)
 If the values don't match, we return an empty json
@@ -129,7 +123,7 @@ def login():
     email = request.form['email']
     pwd = request.form['password']
     print(email)
-    user = list(User.query.filter_by(Email=email))
+    user = list(User.query.filter_by(email=email))
     if (len(user) < 1):
         return jsonify(error="No User by this email"), status.HTTP_406_NOT_ACCEPTABLE
 
@@ -140,7 +134,7 @@ def login():
     else:
         login_user(user)
         return jsonify(user=user.get_id(),
-                       latitude=user.latitude, longitude=user.longitude), status.HTTP_202_ACCEPTED
+                       latitude=user.latitude, longitude=user.longitude, name=user.user_name), status.HTTP_202_ACCEPTED
 
 
 """
@@ -153,12 +147,12 @@ Should it return some json? Should we directly reroute it to home page?
 """
 @app.route('/api/signup', methods=['POST'])
 def signup():
-    user_name = request.form['userName']
+    user_name = request.form['user_name']
     password = request.form['password']
     email = request.form['email']
     latitude = request.form['latitude']
     longitude = request.form['longitude']
-    user = User(UserName=user_name, Email=email,
+    user = User(user_name=user_name, email=email,
                 latitude=latitude, longitude=longitude)
     user.set_password(password)
 
@@ -171,7 +165,7 @@ def signup():
         # mimetype='application/json')
         return jsonify(success="Signed up successfully."), status.HTTP_201_CREATED
     except Exception as e:
-        if str(e)[0:61] == "(sqlite3.IntegrityError) UNIQUE constraint failed: User.Email":
+        if str(e)[0:61] == "(sqlite3.IntegrityError) UNIQUE constraint failed: User.email":
             return jsonify(error="There is already a user for that email id."), status.HTTP_401_UNAUTHORIZED
         else:
             print(str(e)[0:61])
@@ -184,17 +178,17 @@ def signup():
 """
 Logsout an user from an existing session.
 """
-@app.route('/api/logout', methods=['GET', 'POST'])
+@app.route('/api/logout', methods=['POST'])
 def logout():
     logout_user()
-    return redirect('/')
+    return jsonify(success="Logged out successfully."), status.HTTP_200_OK
 
 
 """
 This was the index file inititally.
 I believe, we need to change the app route as this isn't the base app route(it could be?)
-I am not sure how we'll get data because after login, I am passing the userID, latitude and longitude
-as a json. When the frontend now sends the data, it needs to send the UserID assosciated with that logging session
+I am not sure how we'll get data because after login, I am passing the user_id, latitude and longitude
+as a json. When the frontend now sends the data, it needs to send the user_id assosciated with that logging session
 for database additions.
 Everything else is pretty much the same.
 
@@ -205,61 +199,46 @@ def help():
     return app.send_static_file('index.html')
 
 
-@app.route('/api/helpee', methods=["POST"])
+@app.route('/api/request/add', methods=["POST"])
 def helpeeFunction():
-    name_helpee = request.form['name_help']
-    phone_helpee = request.form['phone_help']
     task_content = request.form['content']
     """if the method is POST for storing the id of the user, then use the line below"""
-    user_id = request.form['UserID']
+    helpee_id = request.form['helpee_id']
     """
         if the method is GET, remove the above if statement and use the lines below.
         Change the values of name_help, phone_help etc depending of what you are returning
         I didn't make phone_help a compulsory field. Can always change that
         """
-    name_helpee = request.args.get('name_help', None)
-    phone_helpee = request.args.get('phone_help', 0)
-    task_content = request.args.get('content', None)
-    user_id = request.args.get('id', None)
+    task_short_content = request.form['short_content']
 
-    new_task = Todo(name_help=name_helpee, phone_help=phone_helpee, content=task_content, helpee_id=user_id,
-                    name_helper="", phone_helper=0, helper_id=0)
+    new_task = Todo(content=task_content, helpee_id=helpee_id,
+                    short_content=task_short_content)
 
     try:
         db.session.add(new_task)
         db.session.commit()
-        return redirect('/')
+        return jsonify(success="Added request successfuly."), status.HTTP_201_CREATED
     except Exception as e:
-        return(str(e))
+        return jsonify(error=str(e)), status.HTTP_406_NOT_ACCEPTABLE
 
 
 """
-The same as app route ('/'). I don't know how we'll store the userid because it will be required
+The same as app route ('/'). I don't know how we'll store the user_id because it will be required
 here too.
 I am adding something for the time being
 """
-@app.route('/api/helper/<int:id>', methods=['GET', 'POST'])
+@app.route('/api/request/accept/<int:id>', methods=['POST'])
 def helper(id):
     task = Todo.query.get_or_404(id)
-
-    if request.method == 'POST':
-        task.name_helper = request.form['name_helper']
-        task.phone_helper = request.form['phone_helper']
-        task.lat_helper = request.form['lat_helper']
-        task.long_helper = request.form['long_helper']
-        task.helper_id = request.args.get('id', None)
-        # or
-        task.helper_id = request.form['UserId']
-        try:
-            db.session.commit()
-            return redirect('/')
-        except:
-            return "there was an issue in accepting"
-    else:
-        return render_template('helper.html', task=task)
+    task.helper_id = request.form['helper_id']
+    try:
+        db.session.commit()
+        return jsonify(success="Accepted request successfuly."), status.HTTP_202_ACCEPTED
+    except:
+        return jsonify(error="there was an issue in accepting"), status.HTTP_406_NOT_ACCEPTABLE
 
 
-@app.route('/api/requests/all', methods=['GET', 'POST'])
+@app.route('/api/requests/all', methods=['GET'])
 def getAllRequests():
     temp = list(Todo.query.all())
     reqs = list(map(lambda x: x._asdict(), temp))
@@ -268,12 +247,18 @@ def getAllRequests():
 # for debugging
 @app.route('/api/users/all', methods=['GET', 'POST'])
 def getAllUsers():
-    temp = list(User.query.filter_by(Email="i@gmail.com"))
+    temp = list(User.query.filter_by(email="i@gmail.com"))
     print(temp)
-    reqs = list(map(lambda x: x.Email, temp))
+    reqs = list(map(lambda x: x.email, temp))
     # print(temp)
     reqs = reqs[0]
     return jsonify(requests=reqs), status.HTTP_201_CREATED
+
+
+@app.route('/api/user/<int:id>', methods=['GET', 'POST'])
+def getUserDetails(id):
+    user = User.query.get_or_404(id)
+    return jsonify(name=user.user_name, latitude=user.latitude, longitude=user.longitude), status.HTTP_201_CREATED
 
 
 """
@@ -287,28 +272,34 @@ def get_dist(obj, slong, slat, elong, elat):
     return (obj, dist)
 
 
+def get_dist_help(obj, elong, elat):
+    print(obj.helpee_id)
+    user = User.query.get_or_404(obj.helpee_id)
+    latitude = user.latitude
+    longitude = user.longitude
+    return get_dist(obj, latitude, longitude, elong, elat)
+
+
 """
 returns the json of the objects sorted by ascending order of closest distance
-Again, I don't know how the userid will be stored and passed along to different webpages.
+Again, I don't know how the user_id will be stored and passed along to different webpages.
 As the User class is now storing latitude and longitude, the way of getting it changes
 but everything else should stay the same.
 """
-@app.route('/requests', methods=['GET', 'POST'])
-def closest_points():
-    id = request.args.get('id')
-    user = User.query.get_or_404(UserId=id)
+@app.route('/api/requests/<int:id>', methods=['GET', 'POST'])
+def closest_points(id):
+    # id = request.args.get('id')
+    user = User.query.get_or_404(id)
     lat_helper = user.latitude
     long_helper = user.longitude
     lst_objects = list(Todo.query.all())
-    fin_vals = sorted(list(map(lambda x: get_dist(x, x.get_long_help(
-    ), x.get_lat_help(), long_helper, lat_helper), lst_objects)), key=itemgetter(1))
+    # print(lst_objects[0].)
+    fin_vals = sorted(list(map(lambda x: get_dist_help(
+        x, long_helper, lat_helper), lst_objects)), key=itemgetter(1))
     n_lst = [x[0] for x in fin_vals]
     reqs = list(map(lambda x: x._asdict(), n_lst))
     return jsonify(requests=reqs)
 
-
-if __name__ == "__main__":
-    app.run(debug=True)
 
 """
 Commenting delete and update for now as it will change later
@@ -342,3 +333,5 @@ def update(id):
         return render_template('update.html', task=task)
 
 """
+if __name__ == "__main__":
+    app.run(debug=True)

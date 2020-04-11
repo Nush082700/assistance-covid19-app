@@ -1,175 +1,170 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
+import * as actionCreators from '../actions/actionCreators';
 import './HelpeeForm.scss';
 
-export default class Home extends Component {
+const base =
+	process.env.REACT_APP_ENV == 'dev' ? 'http://localhost:5000/api' : '/api';
+
+class Home extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			gotResponse: [],
-			needResponse: [],
-			pin: '',
-		};
+		this.state = {};
 		this.componentDidMount = this.componentDidMount.bind(this);
 		this.handleChange = this.handleChange.bind(this);
+		this.handleClick = this.handleClick.bind(this);
 	}
 	componentDidMount() {
-		if (!this.state.pin) {
-			console.log('woohoo');
-			axios({
-				method: 'post',
-				url: 'http://localhost:5000/api/requests/all',
-			}).then((res) => {
-				console.log(res);
-				// this.setState()
-				let gotResponse = [];
-				let needResponse = [];
-				res.data.requests.forEach((req) => {
-					req.name_helper
-						? gotResponse.push(req)
-						: needResponse.push(req);
-				});
-				this.setState({
-					gotResponse: gotResponse,
-					needResponse: needResponse,
-				});
-			});
-		} else {
-			let pin = this.state.pin;
-			axios({
-				method: 'get',
-				url: '/pins/' + pin,
-			}).then((res) => {
-				// this.setState()
-				let gotResponse = [];
-				let needResponse = [];
-				res.data.requests.forEach((req) => {
-					req.name_helper
-						? gotResponse.push(req)
-						: needResponse.push(req);
-				});
-				this.setState({
-					gotResponse: gotResponse,
-					needResponse: needResponse,
-				});
-			});
-		}
+		this.props.getRequests(
+			this.props.user ? parseInt(this.props.user) : null
+		);
 	}
 
 	handleChange = (event) => {
 		const name = event.target.name;
 		const value = event.target.value;
 		this.setState({ ...this.state, [name]: value });
-		if (value.length === 6) {
-			let pin = this.state.pin;
-			axios({
-				method: 'get',
-				url: '/pins/' + value,
-			}).then((res) => {
-				// this.setState()
-				console.log(res);
-				let gotResponse = [];
-				let needResponse = [];
-				res.data.requests.forEach((req) => {
-					req.name_helper
-						? gotResponse.push(req)
-						: needResponse.push(req);
-				});
-				this.setState({
-					gotResponse: gotResponse,
-					needResponse: needResponse,
-				});
-			});
-		}
-		if (value.length === 0) {
-			let pin = this.state.pin;
-			axios({
-				method: 'get',
-				url: '/requests/all',
-			}).then((res) => {
-				// this.setState()
-				let gotResponse = [];
-				let needResponse = [];
-				res.data.requests.forEach((req) => {
-					req.name_helper
-						? gotResponse.push(req)
-						: needResponse.push(req);
-				});
-				this.setState({
-					gotResponse: gotResponse,
-					needResponse: needResponse,
-				});
-			});
+	};
+	handleClick = (event) => {
+		if (this.props.user) {
+			this.props.logout();
+			this.props.history.push('/');
+		} else {
+			this.props.history.push('/login');
 		}
 	};
 
-	onFormSubmit = (event) => {};
-
 	render() {
-		console.log('Hi this is a test');
+		const userId = this.props.user;
+		if (this.props.redirect && this.props.redirect != '/') {
+			const redirect = this.props.redirect;
+			this.props.routingFinished();
+			return <Redirect exact from='/signUp' to={redirect} />;
+		}
 		return (
 			<div class='home-page'>
-				<h1 class='header' type='h1'>
-					{' '}
-					Assistance Log
-				</h1>
-				{/* <form> */}
-				<label style={{ width: 300, padding: 10 }}>
-					<input
-						type='text'
-						placeholder='Enter your pin code to filter requests'
-						value={this.state.pin}
-						name='pin'
-						onChange={this.handleChange}
-					/>
-				</label>
-				{/* <input type='submit' /> */}
-				{/* </form> */}
+				<div class='card-container'>
+					<button
+						onClick={this.handleClick}
+						style={{ visibility: 'hidden', margin: 20 }}
+					>
+						{this.props.user
+							? `Logout ${this.props.name}`
+							: 'Login/Sign Up'}
+					</button>
+					<div
+						style={{
+							flexGrow: 1,
+							padding: 10,
+							alignSelf: 'center',
+							justifySelf: 'center',
+							alignItems: 'center',
+							justifyContent: 'center',
+							display: 'flex',
+						}}
+					>
+						<h1>WE NEED A NAME</h1>
+					</div>
+					<button onClick={this.handleClick} style={{ margin: 20 }}>
+						{this.props.user
+							? `Logout ${this.props.name}`
+							: 'Login/Sign Up'}
+					</button>
+				</div>
+				<div class='card-container'>
+					<button
+						onClick={() =>
+							this.props.user
+								? this.props.history.push('/helpeeForm')
+								: this.props.history.push('/login')
+						}
+						style={{ visibility: 'hidden', margin: 20 }}
+					>
+						{this.props.user
+							? `Request Assistance`
+							: 'Login to Request Assistance'}
+					</button>
+					<div
+						style={{
+							flexGrow: 1,
+							padding: 10,
+							alignSelf: 'center',
+							justifySelf: 'center',
+							alignItems: 'center',
+							justifyContent: 'center',
+							display: 'flex',
+						}}
+					>
+						<h1 class='need'>Requests for Assistance</h1>
+					</div>
+					<button
+						onClick={() =>
+							this.props.user
+								? this.props.history.push('/helpeeForm')
+								: this.props.history.push('/login')
+						}
+						style={{ margin: 20 }}
+					>
+						{this.props.user
+							? `Request Assistance`
+							: 'Login to Request Assistance'}
+					</button>
+				</div>
 				<div class='card-container' style={{ flexGrow: 1 }}>
-					<Link to='/signUp' style={{ textDecoration: 'none' }}>
-						<button class='red'>
-							<h2>Sign Up</h2>{' '}
-						</button>
-					</Link>
-				</div>
-				<h2 class='need' type='h2'>
-					{' '}
-					Requests for Assistance
-				</h2>
-
-				<div class='card-container'>
-					{this.state.needResponse.length === 0 && (
-						<h3>
-							{this.state.pin
-								? 'None for this pin'
-								: 'No Requests Registerd'}
-						</h3>
+					{(this.props.currentRequests || [])
+						.filter((req) => req.helper_id == 0)
+						.slice(0, 20).length ? (
+						(this.props.currentRequests || [])
+							.filter((req) => req.helper_id == 0)
+							.slice(0, 20)
+							.map((req) => {
+								return (
+									<NeedResponseCard
+										req={req}
+										user={this.props.user}
+									/>
+								);
+							})
+					) : (
+						<h1>None yet.</h1>
 					)}
-					{this.state.needResponse.map((req) => (
-						<NeedResponseCard req={req} key={req.id} />
-					))}
 				</div>
-				{/* Need res */}
-				<br />
-				{/* {this.state.gotResponse.length} Need res */}
-				<h2 class='got' type='h2'>
-					{' '}
-					Assistance provided
-				</h2>
-
 				<div class='card-container'>
-					{this.state.gotResponse.length === 0 && (
-						<h3>
-							{this.state.pin
-								? 'None for this pin'
-								: 'No Requests Answered'}
-						</h3>
-					)}
-					{this.state.gotResponse.map((req) => (
-						<GotResponseCard req={req} key={req.id} />
-					))}
+					<div
+						style={{
+							flexGrow: 1,
+							padding: 10,
+							alignSelf: 'center',
+							justifySelf: 'center',
+							alignItems: 'center',
+							justifyContent: 'center',
+							display: 'flex',
+						}}
+					>
+						<h1 class='got'>Success Stories</h1>
+					</div>
+				</div>
+				<div class='card-container' style={{ flexGrow: 1 }}>
+					{(this.props.currentRequests || [])
+						.filter((req) => req.helper_id !== 0)
+						.slice(0, 20).length ? (
+						(this.props.currentRequests || [])
+							.filter((req) => req.helper_id !== 0)
+							.slice(0, 20)
+							.map((req) => {
+								return (
+									<GotResponseCard
+										req={req}
+										user={this.props.user}
+									/>
+								);
+							})
+					) : (
+						<h1>None yet.</h1>
+					)}{' '}
 				</div>
 			</div>
 		);
@@ -179,19 +174,27 @@ export default class Home extends Component {
 const NeedResponseCard = (props) => {
 	return (
 		<Link
-			to={{
-				pathname: '/helperForm',
-				state: {
-					req: props.req,
-				},
-			}}
+			to={
+				props.user
+					? {
+							pathname: '/helperForm',
+							state: {
+								req: props.req,
+							},
+					  }
+					: {
+							pathname: '/login',
+							state: {
+								req: props.req,
+							},
+					  }
+			}
 			style={{ textDecoration: 'none' }}
 		>
 			<button class='card-need' type='button'>
 				<h3>
 					{' '}
-					Help with <b>{props.req.content}</b> at{' '}
-					{props.req.address_help}
+					Help with <b>{props.req.short_content}</b>
 				</h3>
 			</button>
 		</Link>
@@ -200,14 +203,19 @@ const NeedResponseCard = (props) => {
 
 const GotResponseCard = (props) => {
 	return (
-		// <Link to={{ pathname: '/helpeeForm' }}>
 		<button class='card-got' type='button'>
 			<h3>
 				{' '}
-				{props.req.name_helper} helped <b>{props.req.name_help}</b> with{' '}
-				<b>{props.req.content}</b> at {props.req.address_help}
+				Helped with <b>{props.req.short_content}</b>
 			</h3>
 		</button>
-		// </Link>
 	);
 };
+
+function mapStateToProps(state) {
+	return {
+		...state,
+	};
+}
+
+export default connect(mapStateToProps, { ...actionCreators })(Home);

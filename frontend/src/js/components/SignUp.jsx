@@ -66,7 +66,7 @@ class SignUp extends Component {
 			return res.data.results[0].geometry.location;
 		});
 		var bodyFormData = new FormData();
-		bodyFormData.set('userName', this.state.name);
+		bodyFormData.set('user_name', this.state.name);
 		bodyFormData.set('password', this.state.pwd);
 		bodyFormData.set('email', this.state.email);
 		bodyFormData.set('latitude', lat);
@@ -75,9 +75,11 @@ class SignUp extends Component {
 	};
 
 	render() {
-		// if (this.props.redirect) {
-		// 	return <Redirect to={this.props.redirect} />;
-		// }
+		if (this.props.redirect && this.props.redirect != '/signUp') {
+			const redirect = this.props.redirect;
+			this.props.routingFinished();
+			return <Redirect exact from='/signUp' to={redirect} />;
+		}
 
 		return (
 			<div class='home-page'>

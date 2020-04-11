@@ -56,9 +56,11 @@ class Login extends Component {
 	};
 
 	render() {
-		// if (this.props.redirect) {
-		// 	return <Redirect to={this.props.redirect} />;
-		// }
+		if (this.props.redirect && this.props.redirect != '/login') {
+			const redirect = this.props.redirect;
+			this.props.routingFinished();
+			return <Redirect exact from='/signUp' to={redirect} />;
+		}
 		return (
 			<div class='home-page'>
 				<form>
@@ -111,14 +113,14 @@ class Login extends Component {
 					>
 						Log in
 					</button>
-					{/* <button
+					<button
 						class='red'
 						type='button'
-						onClick={this.props.history.push('/signUp')}
+						onClick={() => this.props.history.push('/signUp')}
 						style={{ marginTop: 20 }}
 					>
 						Dont have an account?
-					</button> */}
+					</button>
 					{(this.state.error || this.props.error) && (
 						<div class='card-container'>
 							<h3 class='error'>
