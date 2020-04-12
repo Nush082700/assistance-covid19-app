@@ -29,7 +29,7 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.filter(User.user_id == int(id)).first()
+    return User.query.filter(User.user_id == user_id).first() #error here
 
 
 class User(UserMixin, db.Model):
@@ -232,8 +232,11 @@ def helper(id):
     task = Todo.query.get_or_404(id)
     task.helper_id = request.form['helper_id']
     try:
-        db.session.commit()
-        return jsonify(success="Accepted request successfuly."), status.HTTP_202_ACCEPTED
+        if task.helper_id == id:
+            return jsonify(error = "You can't accept your own request"), status.HTTP_406_NOT_ACCEPTABLE
+        else:
+            db.session.commit()
+            return jsonify(success="Accepted request successfuly."), status.HTTP_202_ACCEPTED
     except:
         return jsonify(error="there was an issue in accepting"), status.HTTP_406_NOT_ACCEPTABLE
 
