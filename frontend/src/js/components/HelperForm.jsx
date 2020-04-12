@@ -52,6 +52,11 @@ class HelperForm extends Component {
 
     var bodyFormData = new FormData();
 
+    if (this.state.req.id == this.props.user) {
+      this.setState({ error: "You can't accept your own request" });
+      return;
+    }
+
     bodyFormData.set("helper_id", this.props.user);
     axios({
       method: "post",
@@ -97,6 +102,8 @@ class HelperForm extends Component {
                     ? "https://maps.google.com"
                     : `https://www.google.com/maps/search/?api=1&query=${helpee.latitude},${helpee.longitude}`
                 }
+                target="_blank"
+                rel="noopener noreferrer"
               >
                 Click here for directions
               </a>

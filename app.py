@@ -7,7 +7,7 @@ from flask_cors import CORS
 from collections import OrderedDict
 import os
 from flask_migrate import Migrate
-from math import radians, cos, sin, asin, sqrt, acos
+from math import radians, cos, sin, asin, sqrt, acos, pi, atan2
 from operator import itemgetter
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin
@@ -232,11 +232,11 @@ def helper(id):
     task = Todo.query.get_or_404(id)
     task.helper_id = request.form['helper_id']
     try:
-        if task.helper_id == id:
-            return jsonify(error = "You can't accept your own request"), status.HTTP_406_NOT_ACCEPTABLE
-        else:
-            db.session.commit()
-            return jsonify(success="Accepted request successfuly."), status.HTTP_202_ACCEPTED
+        # if task.helper_id == id:
+        #     return jsonify(error = "You can't accept your own request"), status.HTTP_406_NOT_ACCEPTABLE
+        # else:
+        db.session.commit()
+        return jsonify(success="Accepted request successfuly."), status.HTTP_202_ACCEPTED
     except:
         return jsonify(error="there was an issue in accepting"), status.HTTP_406_NOT_ACCEPTABLE
 
@@ -269,10 +269,18 @@ Returns the distance between two pairs of latitudes and longitudes in KM.
 """
 
 
-def get_dist(obj, slong, slat, elong, elat):
-    dist = 6371.01 * acos(sin(slat)*sin(elat) + cos(slat)
-                          * cos(elat)*cos(slong - elong))
-    return (obj, dist)
+def get_dist(obj, lon1, lat1, lon2, lat2):
+    lon1 = radians(lon1)
+    lon2 = radians(lon2)
+    lat1 = radians(lat1)
+    lat2 = radians(lat2)
+    dlon = lon2-lon1
+    dlat = lat2-lat1
+    a = sin(dlat/2)**2 + cos(lat1)*cos(lat2)*sin(dlon/2)**2
+    c = 2*atan2(sqrt(a),sqrt(1-a))
+    r = 6371
+    print("the distance betweem the two is " + str(c*r))
+    return (obj, c*r)
 
 
 def get_dist_help(obj, elong, elat):
@@ -280,7 +288,7 @@ def get_dist_help(obj, elong, elat):
     user = User.query.get_or_404(obj.helpee_id)
     latitude = user.latitude
     longitude = user.longitude
-    return get_dist(obj, latitude, longitude, elong, elat)
+    return get_dist(obj, longitude, latitude, elong, elat)
 
 
 """
@@ -295,11 +303,10 @@ def closest_points(id):
     user = User.query.get_or_404(id)
     lat_helper = user.latitude
     long_helper = user.longitude
-    lst_objects = list(Todo.query.all())
-    # print(lst_objects[0].)
+    lst_objects = list(Todo.query.filter(Todo.helpee_id != id))
     fin_vals = sorted(list(map(lambda x: get_dist_help(
         x, long_helper, lat_helper), lst_objects)), key=itemgetter(1))
-    n_lst = [x[0] for x in fin_vals]
+    n_lst = [x[0] for x in fin_vals if x[1]<=1]
     reqs = list(map(lambda x: x._asdict(), n_lst))
     return jsonify(requests=reqs)
 
