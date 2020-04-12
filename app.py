@@ -45,6 +45,9 @@ class User(UserMixin, db.Model):
         "Todo", backref="Helpee", lazy="dynamic", foreign_keys='Todo.helpee_id')
     Helper_logs = db.relationship(
         "Todo", backref="Helper", lazy="dynamic", foreign_keys='Todo.helper_id')
+    sent_msg = db.relationship("Chat", backref = "Sender", lazy="dynamic", foreign_keys='Chat.sender_id')
+    rec_msg = db.relationship("Chat", backref = "Receiver", lazy="dynamic", foreign_keys='Chat.receiver_id')
+    last_seen = db.Column(db.DateTime)
 
     def __init__(self, user_name, email, latitude, longitude):
         self.user_name = user_name
@@ -60,6 +63,11 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+
+    def msg_notifications(self):
+        time_last_seen = self.last_seen or datetime(1900,1,1)
+        return Chat.query.filter_by(Receiver=self).filter(Chat.timestamp > last_read_time).count()
 
     def _asdict(self):
         result = OrderedDict()
@@ -100,11 +108,25 @@ class Todo(db.Model):
 class Chat(db.Model):
     __tablename__= 'chat'
 
-    chat_id = db.Column(db.Integer, primary_key=True)
-    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    body = db.Column(db.String)
-    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    id = db.Column(db.Integer, primary_key=True, auto_increment=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('User.UserId'),nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('User.UserId'),nullable=False)
+    message = db.Column(db.String, nullable=False)
+    timestamp = db.Column(db.DateTime(timezone=True), index=True, nullable=False, server_default=func.now())
+
+    def __init__(self, id, sender_id, receiver_id, message, timestamp):
+        self.id = id
+        self.sender_id = sender_id
+        self.receiver_id = receiver_id
+        self.message = message
+        self.timestamp = timestamp
+
+    
+    def _asdict(self):
+        result = OrderedDict()
+        for key in self.__mapper__.c.keys():
+            result[key] = getattr(self, key)
+        return result
 
 """
 Filters all the None objects from a list
@@ -341,5 +363,23 @@ def update(id):
         return render_template('update.html', task=task)
 
 """
+
+@login_required
+@app.route('/send_message/<reciever>', methods=['GET', 'POST'])
+def send_message(receiver):
+    user = User.query.filter_by(username=receiver).first_or_404()
+    if request.method == 'POST':
+        msg = Chat(sender='''logged in user''', receiver=user, message=form.message.data)
+        db.session.add(msg)
+        db.session.commit()
+        print('Your message has been sent.')
+        return redirect('/')
+    return render_template('send_message.html', title=_('Send Message'),
+                           form=form, recipient=recipient)
+
+
+
+
+
 if __name__ == "__main__":
     app.run(debug=True)
