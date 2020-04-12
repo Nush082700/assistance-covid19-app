@@ -97,6 +97,14 @@ class Todo(db.Model):
     def get_id(self):
         return self.id
 
+class Chat(db.Model):
+    __tablename__= 'chat'
+
+    chat_id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    recipient_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    body = db.Column(db.String)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
 """
 Filters all the None objects from a list
