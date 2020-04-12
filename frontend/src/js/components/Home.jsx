@@ -112,6 +112,9 @@ class Home extends Component {
 							? `Request Assistance`
 							: 'Login to Request Assistance'}
 					</button>
+					<button onClick={() => this.props.user ? this.props.history.push('/Chat') : this.props.history.push('/login')} style={{margin: 20}}>
+						{this.props.user ? 'Chat' : 'Login to Chat'}
+					</button>
 				</div>
 				<div class='card-container' style={{ flexGrow: 1 }}>
 					{(this.props.currentRequests || [])

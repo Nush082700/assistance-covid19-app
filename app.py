@@ -11,7 +11,7 @@ from math import radians, cos, sin, asin, sqrt, acos
 from operator import itemgetter
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin
-
+from datetime import datetime
 
 app = Flask(__name__, static_url_path='',
             static_folder='frontend/build')
@@ -47,13 +47,14 @@ class User(UserMixin, db.Model):
         "Todo", backref="Helper", lazy="dynamic", foreign_keys='Todo.helper_id')
     sent_msg = db.relationship("Chat", backref = "Sender", lazy="dynamic", foreign_keys='Chat.sender_id')
     rec_msg = db.relationship("Chat", backref = "Receiver", lazy="dynamic", foreign_keys='Chat.receiver_id')
-    last_seen = db.Column(db.DateTime)
+    # last_seen = db.Column(db.DateTime)
 
     def __init__(self, user_name, email, latitude, longitude):
         self.user_name = user_name
         self.email = email
         self.latitude = latitude
         self.longitude = longitude
+        # self.last_seen = null
 
     def get_id(self):
         return (self.user_id)
@@ -65,9 +66,9 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-    def msg_notifications(self):
-        time_last_seen = self.last_seen or datetime(1900,1,1)
-        return Chat.query.filter_by(Receiver=self).filter(Chat.timestamp > last_read_time).count()
+    # def msg_notifications(self):
+    #     time_last_seen = self.last_seen or datetime(1900,1,1)
+    #     return Chat.query.filter_by(Receiver=self).filter(Chat.timestamp > last_seen).count()
 
     def _asdict(self):
         result = OrderedDict()
@@ -109,10 +110,10 @@ class Chat(db.Model):
     __tablename__= 'chat'
 
     id = db.Column(db.Integer, primary_key=True, auto_increment=True)
-    sender_id = db.Column(db.Integer, db.ForeignKey('User.UserId'),nullable=False)
-    receiver_id = db.Column(db.Integer, db.ForeignKey('User.UserId'),nullable=False)
+    sender_id = db.Column(db.Integer, db.ForeignKey('User.user_id'),nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('User.user_id'),nullable=False)
     message = db.Column(db.String, nullable=False)
-    timestamp = db.Column(db.DateTime(timezone=True), index=True, nullable=False, server_default=func.now())
+    timestamp = db.Column(db.DateTime(timezone=True), index=True, nullable=False)
 
     def __init__(self, id, sender_id, receiver_id, message, timestamp):
         self.id = id
@@ -364,18 +365,43 @@ def update(id):
 
 """
 
+
+"""Sending a message, I don't know how we're getting the sender information but the idea in my
+head us that when you're logged in you can click on a request you've accepted and hit a button that says
+chat, and that takes you to the chat_msg window where it displays that conversation's history  """
+
 @login_required
-@app.route('/send_message/<reciever>', methods=['GET', 'POST'])
-def send_message(receiver):
-    user = User.query.filter_by(username=receiver).first_or_404()
-    if request.method == 'POST':
-        msg = Chat(sender='''logged in user''', receiver=user, message=form.message.data)
-        db.session.add(msg)
+@app.route('/send_message/<int:reciever>', methods=['GET', 'POST'])
+def send_message(sender):
+    receiver = request.form['receiver']
+    message = request.form['chat']
+    new_msg = Chat(sender = sender, receiver = receiver,message = message)
+    try:
+        db.session.add(new_msg)
         db.session.commit()
-        print('Your message has been sent.')
-        return redirect('/')
-    return render_template('send_message.html', title=_('Send Message'),
-                           form=form, recipient=recipient)
+        return jsonify(success="message was sent"), status.HTTP_201_CREATED
+    except Exception as e:
+        return jsonify(error=str(e)), status.HTTP_406_NOT_ACCEPTABLE
+    
+    # user = User.query.filter_by(username=receiver).first_or_404()
+    # if request.method == 'POST':
+    #     msg = Chat(sender='''logged in user''', receiver=user, message=form.message.data)
+    #     db.session.add(msg)
+    #     db.session.commit()
+    #     print('Your message has been sent.')
+    #     return redirect('/')
+    # return render_template('send_message.html', title=_('Send Message'),
+    #                        form=form, recipient=recipient)
+
+@app.route('/messages/<int:id>')
+@login_required
+def messages(user):
+    user = User.query.get_or_404(id)
+    user.last_seen = datetime.utcnow()
+    db.session.commit()
+    messages = user.rec_msg.order_by(Chat.timestamp.desc())
+    return render_template('messages.html', messages=messages.items)
+
 
 
 
