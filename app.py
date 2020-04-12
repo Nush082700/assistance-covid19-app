@@ -279,7 +279,7 @@ def get_dist(obj, lon1, lat1, lon2, lat2):
     a = sin(dlat/2)**2 + cos(lat1)*cos(lat2)*sin(dlon/2)**2
     c = 2*atan2(sqrt(a),sqrt(1-a))
     r = 6371
-    print("the distance betweem the two is " + str(c*r))
+    # print("the distance betweem the two is " + str(c*r))
     return (obj, c*r)
 
 
