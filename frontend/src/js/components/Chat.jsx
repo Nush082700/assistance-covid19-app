@@ -40,12 +40,13 @@ class Chat extends Component {
 
         this.setState({ error: '' });
         var bodyFormData = new FormData();
+        bodyFormData.set('sender', this.props.user);
         bodyFormData.set('receiver', this.state.receiver);
         bodyFormData.set('chat', this.state.content);
         axios({
             method: 'post',
             baseURL: base,
-            url: '/send_message/',
+            url: `/send_message/${this.state.receiver}`,
             data: bodyFormData,
             headers: { 'Content-Type': 'multipart/form-data' },
         })
