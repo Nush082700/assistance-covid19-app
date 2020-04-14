@@ -371,7 +371,7 @@ head us that when you're logged in you can click on a request you've accepted an
 chat, and that takes you to the chat_msg window where it displays that conversation's history  """
 
 @login_required
-@app.route('/send_message/<int:reciever>', methods=['GET', 'POST'])
+@app.route('/send_message/<int:receiver>', methods=['GET', 'POST'])
 def send_message(sender):
     receiver = request.form['receiver']
     message = request.form['chat']
