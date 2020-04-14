@@ -14,6 +14,7 @@ import Home from './js/components/Home';
 import Login from './js/components/Login';
 import SignUp from './js/components/SignUp';
 import * as serviceWorker from './serviceWorker';
+import Chat from './js/components/Chat';
 
 ReactDOM.render(
 	<Provider store={store}>
@@ -27,6 +28,7 @@ ReactDOM.render(
 					<Route path='/helperSuccess' component={HelperSuccess} />
 					<Route path='/login' component={Login} />
 					<Route path='/signUp' component={SignUp} />
+					<Route path= '/chat' component={Chat} />
 				</div>
 			</Router>
 		</React.StrictMode>

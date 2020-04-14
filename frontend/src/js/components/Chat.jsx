@@ -112,6 +112,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { ...actionCreators })(
-    RequireAssistanceForm
-);
+export default connect(mapStateToProps, { ...actionCreators })(Chat);
