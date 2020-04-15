@@ -115,8 +115,7 @@ class Chat(db.Model):
     message = db.Column(db.String, nullable=False)
     timestamp = db.Column(db.DateTime(timezone=True), index=True, nullable=False)
 
-    def __init__(self, id, sender_id, receiver_id, message, timestamp):
-        self.id = id
+    def __init__(self, sender_id, receiver_id, message, timestamp):
         self.sender_id = sender_id
         self.receiver_id = receiver_id
         self.message = message
@@ -376,7 +375,9 @@ def send_message(receiver):
     sender = request.form['sender']
     receiver = request.form['receiver']
     message = request.form['chat']
-    new_msg = Chat(sender = sender, receiver = receiver,message = message)
+    print(sender)
+    print(receiver)
+    new_msg = Chat(sender_id = sender, receiver_id = receiver,message = message, timestamp= datetime.now())
     try:
         db.session.add(new_msg)
         db.session.commit()
