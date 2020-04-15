@@ -42,7 +42,7 @@ class Chat extends Component {
         var bodyFormData = new FormData();
         bodyFormData.set('sender', this.props.user);
         bodyFormData.set('receiver', this.state.receiver);
-        bodyFormData.set('chat', this.state.content);
+        bodyFormData.set('chat', this.state.chat);
         axios({
             method: 'post',
             baseURL: base,
