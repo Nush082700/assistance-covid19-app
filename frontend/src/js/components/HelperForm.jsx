@@ -103,6 +103,14 @@ class HelperForm extends Component {
 							</a>
 						</h1>
 					</div>
+					<div class = 'segment'>
+						<button class='red' type='button'>
+							<a href ="">
+								{/* how do i get the helpee id passed on to the chat.jsx */}
+							Chat with User 
+								</a>
+						</button>
+					</div>
 
 					<button
 						class='red'

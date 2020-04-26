@@ -12,8 +12,11 @@ class Chat extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            req = {}, 
             receiver: '',
             chat: '',
+            notifications:'',
+            message_hist: '',
             error: '',
         };
         this.handleChange = this.handleChange.bind(this);
@@ -46,7 +49,7 @@ class Chat extends Component {
         axios({
             method: 'post',
             baseURL: base,
-            url: `/send_message/${this.state.receiver}`,
+            url: `/send_message/`,
             data: bodyFormData,
             headers: { 'Content-Type': 'multipart/form-data' },
         })
@@ -68,6 +71,7 @@ class Chat extends Component {
                     <div class='segment'>
                         <h1>Chat here</h1>
                     </div>
+                    <li></li>
                     <label>
                         <input
                             type='text'
@@ -79,7 +83,6 @@ class Chat extends Component {
                     </label>
                     <label>
                         <textarea
-                            // type='password'
                             type='text'
                             placeholder='Message'
                             value={this.state.chat}

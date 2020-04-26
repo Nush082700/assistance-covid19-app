@@ -12,6 +12,7 @@ from operator import itemgetter
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, login_user, login_required, logout_user, UserMixin
 from datetime import datetime
+from time import time
 
 app = Flask(__name__, static_url_path='',
             static_folder='frontend/build')
@@ -41,13 +42,12 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     longitude = db.Column(db.Float, nullable=False)
-    Help_logs = db.relationship(
-        "Todo", backref="Helpee", lazy="dynamic", foreign_keys='Todo.helpee_id')
-    Helper_logs = db.relationship(
-        "Todo", backref="Helper", lazy="dynamic", foreign_keys='Todo.helper_id')
+    Help_logs = db.relationship("Todo", backref="Helpee", lazy="dynamic", foreign_keys='Todo.helpee_id')
+    Helper_logs = db.relationship("Todo", backref="Helper", lazy="dynamic", foreign_keys='Todo.helper_id')
     sent_msg = db.relationship("Chat", backref = "Sender", lazy="dynamic", foreign_keys='Chat.sender_id')
     rec_msg = db.relationship("Chat", backref = "Receiver", lazy="dynamic", foreign_keys='Chat.receiver_id')
-    # last_seen = db.Column(db.DateTime)
+    last_seen = db.Column(db.DateTime)
+    notifications = db.relationship("Notifications", backref="user_notif", lazy="dynamic")
 
     def __init__(self, user_name, email, latitude, longitude):
         self.user_name = user_name
@@ -66,15 +66,21 @@ class User(UserMixin, db.Model):
         return check_password_hash(self.password_hash, password)
 
 
-    # def msg_notifications(self):
-    #     time_last_seen = self.last_seen or datetime(1900,1,1)
-    #     return Chat.query.filter_by(Receiver=self).filter(Chat.timestamp > last_seen).count()
+    def msg_notifications(self):
+        time_last_seen = self.last_seen or datetime(1900,1,1)
+        return Chat.query.filter_by(Receiver=self).filter(Chat.timestamp > last_seen).count()
 
     def _asdict(self):
         result = OrderedDict()
         for key in self.__mapper__.c.keys():
             result[key] = getattr(self, key)
         return result
+
+    def add_notification(self, name, data):
+        self.notifications.filter_by(user_name=name).delete()
+        notif = Notifications(name=name, payload_json=json.dumps(data), user_notif=self)
+        db.session.add(notif)
+        return notif
 
 
 class Todo(db.Model):
@@ -127,6 +133,18 @@ class Chat(db.Model):
         for key in self.__mapper__.c.keys():
             result[key] = getattr(self, key)
         return result
+
+
+class Notifications(db.Model):
+    __tablename__ = 'notifications'
+    id = db.Column(db.Integer, primary_key=True, auto_increment=True)
+    name = db.Column(db.String(128), index=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
+    timestamp = db.Column(db.DateTime(timezone=True), index=True, nullable=False)
+    payload_json = db.Column(db.Text)
+
+    def get_data(self):
+        return json.loads(str(self.payload_json))
 
 """
 Filters all the None objects from a list
@@ -369,40 +387,46 @@ def update(id):
 head us that when you're logged in you can click on a request you've accepted and hit a button that says
 chat, and that takes you to the chat_msg window where it displays that conversation's history  """
 
+"""Note: this is checking sender and receiver id not name, 
+I need to make it take in the receiver name in the frontend and pass it in here. It should work like this
+if I can get Chat.jsx incorporated as a Panel in HelperForm.jsx. Helpee id gets passed in as the reciever"""
+"""But there also needs to be another chat window that shows all notifications for a helpee which is where Chat.jsx
+will come into play."""
+
 @login_required
-@app.route('/api/send_message/<int:receiver>', methods=['POST'])
-def send_message(receiver):
+@app.route('/api/send_message/', methods=['POST'])
+def send_message():
     sender = request.form['sender']
     receiver = request.form['receiver']
     message = request.form['chat']
-    print(sender)
-    print(receiver)
     new_msg = Chat(sender_id = sender, receiver_id = receiver,message = message, timestamp= datetime.now())
     try:
         db.session.add(new_msg)
+        receiver.add_notification('unread_msg', receiver.msg_notifications())
         db.session.commit()
         return jsonify(success="message was sent"), status.HTTP_201_CREATED
     except Exception as e:
         return jsonify(error=str(e)), status.HTTP_406_NOT_ACCEPTABLE
-    
-    # user = User.query.filter_by(username=receiver).first_or_404()
-    # if request.method == 'POST':
-    #     msg = Chat(sender='''logged in user''', receiver=user, message=form.message.data)
-    #     db.session.add(msg)
-    #     db.session.commit()
-    #     print('Your message has been sent.')
-    #     return redirect('/')
-    # return render_template('send_message.html', title=_('Send Message'),
-    #                        form=form, recipient=recipient)
 
+'''returns the messages received by a particular user'''
 @app.route('/messages/<int:id>')
 @login_required
-def messages(user):
+def messages(id):
     user = User.query.get_or_404(id)
     user.last_seen = datetime.utcnow()
+    user.add_notification('unread_message_count', 0)
     db.session.commit()
     messages = user.rec_msg.order_by(Chat.timestamp.desc())
     return render_template('messages.html', messages=messages.items)
+
+
+@app.route('/notifications/<int:id>')
+@login_required
+def notifications(id):
+    user = User.query.get_or_404(id)
+    new_msgs_from = request.args.get('last_update', 0.0, type=float)
+    new_notifs = user.notifications.filter(Notifications.timestamp > last_update).order_by(Notification.timestamp.asc())
+    return jsonify([{'name': n.name,'data': n.get_data(),'timestamp': n.timestamp} for n in new_notifs])
 
 
 
