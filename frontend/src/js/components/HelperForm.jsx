@@ -104,12 +104,23 @@ class HelperForm extends Component {
 						</h1>
 					</div>
 					<div class = 'segment'>
-						<button class='red' type='button'>
-							<a href ="">
-								{/* how do i get the helpee id passed on to the chat.jsx */}
-							Chat with User 
-								</a>
-						</button>
+					{(this.props.currentRequests || [])
+						.filter((req) => req.helper_id == 0)
+						.slice(0, 20).length ? (
+						(this.props.currentRequests || [])
+							.filter((req) => req.helper_id == 0)
+							.slice(0, 20)
+							.map((req) => {
+								return (
+									<NeedResponseCard
+										req={req}
+										user={this.props.user}
+									/>
+								);
+							})
+					) : (
+						<h1>None yet.</h1>
+					)}
 					</div>
 
 					<button
@@ -136,5 +147,34 @@ function mapStateToProps(state) {
 		...state,
 	};
 }
+const NeedResponseCard = (props) => {
+	return (
+		<Link
+			to={
+				props.user
+					? {
+							pathname: '/chat',
+							state: {
+								receiver: props.helpee,
+							},
+					  }
+					: {
+							pathname: '/login',
+							state: {
+								req: props.req,
+							},
+					  }
+			}
+			style={{ textDecoration: 'none' }}
+		>
+			<button class='card-need' type='button'>
+				<h3>
+					{' '}
+					Chat with Helpee
+				</h3>
+			</button>
+		</Link>
+	);
+};
 
 export default connect(mapStateToProps, { ...actionCreators })(HelperForm);

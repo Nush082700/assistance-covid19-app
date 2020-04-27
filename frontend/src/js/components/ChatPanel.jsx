@@ -8,21 +8,19 @@ import './HelpeeForm.scss';
 const base =
     process.env.REACT_APP_ENV == 'dev' ? 'http://localhost:5000/api' : '/api';
     
-class Chat extends Component {
+class ChatPanel extends Component {
     constructor(props) {
         super(props);
         this.state = {
             req: {}, 
-            receiver: null,
-            chat: '',
             notifications:'',
             message_hist_all: {},
-            message_hist_curr:{},
             error: '',
         };
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
+
     async componentWillMount() {
 		const { req } = this.props.location.state;
 		await this.setState({ req: req });
@@ -82,6 +80,10 @@ class Chat extends Component {
                 console.log(response);
             });
     };
+
+    updateReceiver(receiver) {
+        return;
+    }
 
     render() {
         return (
