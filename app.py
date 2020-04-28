@@ -440,7 +440,7 @@ def messages(id):
 def mark_read(id):
     sender = request.form['sender']
     user = User.query.get_or_404(id)
-    messages = Chat.query.filter(or_(and_(
+    messages = Chat.query.filter(or_(and_(\
         Chat.sender_id==id, Chat.receiver_id == sender), and_(Chat.sender_id==sender, Chat.receiver_id == id))\
         ).order_by(Chat.timestamp.desc())
     messages.unread = False
