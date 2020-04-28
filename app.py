@@ -409,8 +409,8 @@ def send_message():
     except Exception as e:
         return jsonify(error=str(e)), status.HTTP_406_NOT_ACCEPTABLE
 
-'''returns the messages received by a particular user'''
-@app.route('/api/allmessages/<int:id>')
+'''returns the users in contact with a particular user'''
+@app.route('/api/allusers/<int:id>')
 @login_required
 def messages(id):
     user = User.query.get_or_404(id)
@@ -418,8 +418,19 @@ def messages(id):
     # user.add_notification('unread_message_count', 0)
     try:
         db.session.commit()
-        messages = user.rec_msg.order_by(Chat.timestamp.desc())
-        return jsonify([{'sender_id': i.sender_id, 'receiver_id': i.receiver.id, 'message': i.message, 'timestamp':i.timestamp, 'unread':i.unread} for i in messages]), status.HTTP_202_ACCEPTED
+        sender = aliased(User)
+        receiver = aliased(User)
+        users = session.query(Chat.sender_id.label("send_id"), sender.name.label("sender"), Chat.receiver_id.label("rec_id"), receiver.name.label("receiver"), Chat.message.label("message"), Chat.timestamp.label("timestamp"))
+        users = users.outerjoin(sender, Chat.sender_id == sender.user_id)
+        users = users.outerjoin(sender, Chat.receiver_id == receiver.user_id)
+        users = users.filter(or_(Chat.sender_id == id, Chat.receiver_id == id))
+        users = users.order_by(Chat.timestamp.desc())
+        final_list = []
+        for user in users:
+            final_list.append(user.sender if user.send_id != id else user.receiver)
+        return json.dumps(final_list)
+        
+        # return jsonify([{'sender_id': i.sender_id, 'receiver_id': i.receiver.id, 'message': i.message, 'timestamp':i.timestamp, 'unread':i.unread} for i in messages]), status.HTTP_202_ACCEPTED
     except Exception as e:
         return jsonify(error=str(e)), status.HTTP_406_NOT_ACCEPTABLE
 
@@ -429,14 +440,16 @@ def messages(id):
 def mark_read(id):
     sender = request.form['sender']
     user = User.query.get_or_404(id)
-    messages = Chat.query.filter_by(Receiver=id, Sender = sender).filter(Chat.timestamp > user.last_seen)
+    messages = Chat.query.filter(or_(and_(
+        Chat.sender_id==id, Chat.receiver_id == sender), and_(Chat.sender_id==sender, Chat.receiver_id == id))\
+        ).order_by(Chat.timestamp.desc())
     messages.unread = False
     try:
         db.session.commit()
-        return jsonify([{'sender_id': i.sender_id, 'receiver_id': i.receiver.id, 'message': i.message, 'timestamp':i.timestamp, 'unread':i.unread} for i in messages]), status.HTTP_202_ACCEPTED
+        return jsonify([{'sender_id': i.sender_id, 'receiver_id': i.receiver.id, \
+        'message': i.message, 'timestamp':i.timestamp, 'unread':i.unread} for i in messages]), status.HTTP_202_ACCEPTED
     except Exception as e:
         return jsonify(error=str(e)), status.HTTP_406_NOT_ACCEPTABLE
-
 
 # @app.route('/notifications/<int:id>')
 # @login_required

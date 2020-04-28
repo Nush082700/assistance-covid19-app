@@ -29,7 +29,7 @@ class Chat extends Component {
 		const message_hist_all = await axios({
 			method: 'get',
 			baseURL: base,
-			url: `/allmessages/${this.props.user}`,
+			url: `/allusers/${this.props.user}`,
 		})
 			.then((res) => {
 				return res.data;
@@ -95,7 +95,7 @@ class Chat extends Component {
                         <input
                             type='text'
                             placeholder='Receiver'
-                            value={this.state.receiver}
+                            value={this.state.receiver.id}
                             name='receiver'
                             onChange={this.handleChange}
                         />
